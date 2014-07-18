@@ -1,0 +1,14 @@
+{
+    "name": "domain",
+    "author": {
+        "name": "Loreji Team",
+        "email": "team@loreji.com"
+    },
+    "type": "panel",
+    "version": "1.0",
+    "update_url": "http://loreji.com/module/domain/",
+    "permissions": {
+        "0": "PERM_RUN",
+        "1": "PERM_ALL"
+    }
+}

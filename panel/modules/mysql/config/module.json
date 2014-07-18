@@ -1,0 +1,14 @@
+{
+    "name": "mysql",
+    "author": {
+        "name": "Loreji Team",
+        "email": "team@loreji.com"
+    },
+    "type": "system",
+    "version": "1.0",
+    "update_url": "http://loreji.com/module/mysql/",
+    "permissions": {
+        "0": "PERM_RUN",
+        "1": "PERM_ALL"
+    }
+}

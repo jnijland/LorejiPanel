@@ -1,0 +1,35 @@
+#!/usr/bin/php
+<?php
+if (php_sapi_name() != 'cli') {
+	die('Must run from command line');
+}
+// Make the arguments global
+global $argv;
+
+// Require all loreji apps
+require_once('/etc/loreji/panel/init.php');
+
+// Clear screen
+Daemon::Cli_clear();
+
+// Init the error handler
+Daemon::Cli_init();
+
+printf("\t ##################################\n");
+printf("\t #          Loreji CLI            #\n");
+printf("\t #             ".Settings::get('loreji_version')."              #\n");
+printf("\t ##################################\n");
+printf("\n");
+
+// Remove annoying mail message
+Cli::remove_root_mail();
+
+$args = Cli::args();
+//print_r($args);
+
+if(!isset($args[2])){
+	$args[2] = NULL;
+}
+call_user_func_array(array(ucfirst($args[0]), 'cli_'.$args[1]), array($args[2]));
+
+?>

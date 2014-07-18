@@ -1,0 +1,55 @@
+#!/usr/bin/php
+<?php
+$time_start = microtime(true);
+if (php_sapi_name() != 'cli') {
+	die('Must run from command line');
+}
+
+/*
+*
+*	Still has some todo, todo... but it creates vhosts (basic)
+*	Todo: SSL, Over bandwidth, Over disksize
+*
+*/
+require_once('/etc/loreji/panel/init.php');
+
+// Clear screen
+Daemon::Cli_clear();
+
+// Init the error handler
+Daemon::Cli_init();
+
+// Output of header
+Daemon::Cli_header();
+
+// Before we do anything, run the before hooks
+Daemon::Before_daemon_hooks();
+
+// Add panel vhost to the file
+Daemon::Build_panel_entry();
+
+// Loop trough the vhosts and handle sizes etec.
+Daemon::Loop_vhosts();
+
+// Rebuild the vhost.conf file 
+echo "\n\033[00;32mBuilding new vhost file (".Settings::get('loreji_vhost_file').") ....\033[0m\n";
+file_put_contents(Settings::get('loreji_vhost_file'), Daemon::$vhost);
+
+// Run the on hooks
+Daemon::On_daemon_hooks();
+
+$search_array = array("\n", "\r", "*", "\n\r", '', "\t");
+$replac_array = array('', '', '', '', '', '');
+printf(str_replace($search_array, $replac_array, shell_exec('service apache2 reload')));
+
+// Run the after hooks
+Daemon::After_daemon_hooks();
+
+Settings::set('last_daemon_run', time());
+echo "\n\033[00;32mFinished!....\033[0m\n";
+printf("\n");
+$time_end = microtime(true);
+$time = round($time_end - $time_start, 2);
+printf("### Daemon executed in \033[00;32m$time\033[0m seconds \n\n");
+Settings::set('deamon_run_time', $time);
+?>

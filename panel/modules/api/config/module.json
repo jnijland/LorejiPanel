@@ -1,0 +1,14 @@
+{
+    "name": "api",
+    "author": {
+        "name": "Loreji Team",
+        "email": "team@loreji.com"
+    },
+    "type": "panel",
+    "version": "1.0",
+    "update_url": "http://loreji.com/module/api/",
+    "permissions": {
+        "0": "PERM_RUN",
+        "1": "PERM_ALL"
+    }
+}
