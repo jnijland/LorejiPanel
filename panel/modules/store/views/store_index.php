@@ -22,11 +22,17 @@ foreach (Store::load_inner_repos_to_array() as $repo) {
     { continue; } else { break; }
   }
 
+  $permission_list = '';
+  foreach ($module['permissions'] as $permission) {
+    $permission_list .= '<li class="fa fa-long-arrow-right"><div class="permtext">'.Module::Permission_database($permission).'</div></li><br />';
+  }
+
+  $permission_list = base64_encode($permission_list);
   // Version check!
-  $button['update'] = ($module['version'] !== $installed_module->version) ? '<button class="btn btn-warning pull-right">Update</button>' : '' ;
+  $button['update'] = ($module['version'] !== $installed_module->version) ? '<button class="btn btn-warning pull-right PopupLinkUpdate" data-name="'.$module['name'].'" data-permlist="'.$permission_list.'" data-id="'.strtolower($module['name']).'">Update</button>' : '' ;
 
   // Version check!
-  $button['install'] = (strtolower($installed_module->name) != strtolower($module['name'])) ? '<button class="btn btn-success pull-left">Install</button>' : '<button class="btn btn-danger pull-left">Remove</button>';
+  $button['install'] = (strtolower($installed_module->name) != strtolower($module['name'])) ? '<button class="btn btn-success pull-left PopupLinkInstall" data-name="'.$module['name'].'" data-permlist="'.$permission_list.'" data-id="'.strtolower($module['name']).'"> Install</button>' : '<button class="btn btn-danger pull-left removePopupLink" data-name="'.$module['name'].'" data-id="'.strtolower($module['name']).'">Remove</button>';
 
 ?>
 <div class="col-md-4">
@@ -36,7 +42,7 @@ foreach (Store::load_inner_repos_to_array() as $repo) {
       <h4 class="panel-title"><?php echo $module['name']; ?> </h4>
     </div><!-- panel-heading -->
 
-    <div class="panel-body">
+    <div class="panel-body" data-url="/domain/remove/{{id}}">
     <?php echo (isset($module['desc'][$lang])) ? $module['desc'][$lang] : $module['desc']['EN']; ?>
     </div><!-- panel-body -->
 
@@ -54,10 +60,16 @@ foreach (Store::load_inner_repos_to_array() as $repo) {
 <?php
   }
 }
-var_dump($GLOBALS['modules']);
+//var_dump($GLOBALS['modules']);
 ?>
 <!-- ################################### -->
 
   </div><!-- controlpanel -->
 
   </div><!-- mainpanel -->
+
+  <script type="text/javascript">
+  jQuery(document).ready(function($) {
+    $('#permissionClick').on('click', "#permissionClick", function() { alert("Hay!"); });
+  });
+  </script
