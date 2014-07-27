@@ -43,4 +43,8 @@
 
 	$_LANG['global.on'] = 'On';
 	$_LANG['global.off'] = 'Off';
+
+	$_LANG['global.permission.error'] = '<strong>PERMISSION MANAGER:</strong> Illegal call from module <strong>{{modname}}</strong>, It\'s missing the permission: "<strong>{{permname}}</strong>"<br />
+		        							It is possible that this was a mistake by the module author, but this can also be a modificated module with malicious code!<br />
+		        							Please be careful if you are editting the module.json file or report this to <a href=\'mailto:support@loreji.com\'>Loreji Support</a>'
 ?>

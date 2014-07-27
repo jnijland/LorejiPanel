@@ -37,10 +37,15 @@
 
 	// Popup modals
 	$_LANG['global.modal.title'] = '{{name}} verwijderen?';
-	$_LANG['global.modal.body'] = 'Weet u zeker dat u <strong>{{name}}</strong> wilt verwijderen?';
+	$_LANG['global.modal.body'] = 'Weet je zeker dat je <strong>{{name}}</strong> wilt verwijderen?';
 	$_LANG['global.yes'] = 'Ja';
 	$_LANG['global.no'] = 'Nee';
 
 	$_LANG['global.on'] = 'Aan';
 	$_LANG['global.off'] = 'Uit';
+
+	$_LANG['global.permission.error'] = '<strong>PERMISSIE MANAGER:</strong> Illigale vraag van module <strong>{{modname}}</strong>, die de permissie: "<strong>{{permname}}</strong>" mist.<br />
+		        							Het is mogelijk dat dit een vergissing was door de module auteur, maar dit kan ook een gemodificeerde module met kwaadaardige code zijn! <br /> 
+		        							Wees voorzichtig als u de module.json bestand gaat bewerken of maak melding bij <a href=\'mailto:support@loreji.com\'>Loreji Support</a>'
+
 ?>
