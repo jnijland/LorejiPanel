@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <meta name="description" content="">
   <meta name="author" content="">
+  <meta name="google-play-app" content="app-id=com.daltcore.lorejimanagement">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.css">
+
   <link rel="shortcut icon" href="panel/images/favicon.png" type="image/png">
 
   <title>Loreji Panel</title>
@@ -97,8 +100,16 @@
   <script src="<?php echo Url::site('/panel/js/bootstrap.min.js'); ?>"></script>
   <script src="<?php echo Url::site('/panel/js/modernizr.min.js'); ?>"></script>
   <script src="<?php echo Url::site('/panel/js/retina.min.js'); ?>"></script>
-
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.js"></script>
   <script src="<?php echo Url::site('/panel/js/custom.js'); ?>"></script>
+  <script type="text/javascript" charset="utf-8" async defer>
+  jQuery(document).ready(function($) {
+    $.smartbanner({
+      title: 'Audience Opinion',
+      author: 'Dunn Solutions Group'
+    });
+  });
+  </script>
 
 </body>
 </html>

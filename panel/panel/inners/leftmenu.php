@@ -98,27 +98,26 @@
             }
         }
         ?>
-        <!--
+        
         <?php
             // All admin thingys
             if(Auth::has_role('admin') === TRUE){
         ?>  
+
+        <!-- Dashboard Module -->
+        <li class="<?php echo (Route::$params->controller === 'store') ? 'active' : '' ;?>"><a href="<?php echo Url::site('/store/index'); ?>"><i class="fa fa-shopping-cart"></i> <span>Store</span></a></li>
         
-        <!--Apache_Management Module --
+        <!--Apache_Management Module -->
         <?php $controller = "management" ?>
         <li class="nav-parent <?php echo (Route::$params->controller === $controller) ? 'active nav-active' : '' ;?>"><a href="#">
         <i class="fa fa-sitemap"></i> <span>Management</span></a>
           <ul class="children" style="<?php echo (Route::$params->controller === $controller && Cookie::get('nav_collapse') !== 'true') ? 'display:block;' : '' ;?>">
-            
-            <?php $action = 'index'; ?>
-            <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
-            <i class="fa fa-caret-right"></i> Overview</a></li>
 
             <?php $action = 'users'; ?>
             <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
             <i class="fa fa-caret-right"></i> User Management</a></li>
 
-            <?php $action = 'packages'; ?>
+           <!-- <?php $action = 'packages'; ?>
             <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
             <i class="fa fa-caret-right"></i> Package Management</a></li>
 
@@ -133,24 +132,20 @@
             <?php $action = 'php'; ?>
             <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
             <i class="fa fa-caret-right"></i> PHP Management</a></li>
+            -->
 
-
-            <!-- as last --
+            <!-- as last -->
             <?php $action = 'loreji'; ?>
             <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
             <i class="fa fa-caret-right"></i> Loreji Management</a></li>
 
-            <!-- kind of hidden feature --
-                <?php $action = 'repman'; ?>
-                <li id="hiddenmenu" style="display:none;"><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
-                <i class="fa fa-caret-right"></i> REPO Management</a></li>
 
           </ul>
         </li>
 
         <?php 
             }
-        ?> -->
+        ?> 
         <!--
         <li class="nav-parent"><a href="#"><i class="fa fa-suitcase"></i> <span>UI Elements</span></a>
           <ul class="children">
@@ -228,5 +223,6 @@
             </li>
         </ul>
       </div> infosummary -->
+
     </div><!-- leftpanelinner -->
   </div><!-- leftpanel -->
