@@ -133,13 +133,18 @@ class Domain extends Controller
 		$time = time();
 
 		$userid = parent::User('au_id_in');
-		$domainquery = parent::db()->prepare("INSERT INTO vhosts (au_id_in, vh_domain_vc, vh_path_vc, vh_type_en, vh_added_ts) 
+		$globalSuhosin = Settings::get('global_suhosin');
+		$openBasedir = Settings::get('global_openbasedir');
+
+		$domainquery = parent::db()->prepare("INSERT INTO vhosts (au_id_in, vh_domain_vc, vh_path_vc, vh_type_en, vh_suhosin_vc, vh_openbasedir_vc, vh_added_ts) 
 		VALUES 
-		(:userid, :domainname, :vhostname, :domaintype, :timestamp)");
+		(:userid, :domainname, :vhostname, :domaintype, :suhosin, :openbasedir, :timestamp)");
 		$domainquery->bindParam(':userid', 		$userid);
 		$domainquery->bindParam(':domainname', 	$domainname);
 		$domainquery->bindParam(':vhostname',	$vhostname);
 		$domainquery->bindParam(':domaintype', 	$type);
+		$domainquery->bindParam(':suhosin', $globalSuhosin);
+		$domainquery->bindParam(':openbasedir', $openBasedir);
 		$domainquery->bindParam(':timestamp', 	$time);
 		$domainquery->execute();
 	}
