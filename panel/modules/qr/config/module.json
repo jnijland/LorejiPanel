@@ -9,6 +9,7 @@
     "update_url": "http://loreji.com/module/qr/",
     "permissions": {
         "0": "PERM_RUN",
-        "1": "PERM_ALL"
+        "1": "PERM_FILE",
+        "2": "PERM_INTERNET"
     }
 }

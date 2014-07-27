@@ -9,6 +9,8 @@
     "update_url": "http://loreji.com/module/domain/",
     "permissions": {
         "0": "PERM_RUN",
-        "1": "PERM_ALL"
+        "1": "PERM_DB",
+        "2": "PERM_FILE",
+        "3": "PERM_INTERNET"
     }
 }
