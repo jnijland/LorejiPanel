@@ -26,25 +26,27 @@ class Language extends Controller
 	public static function Init_files(){
 
 		$use_cache = Settings::get('use_lang_cache');
-		if(!file_exists(CACHEPATH.'/languagecache'.Settings::get('loreji_system_lang').'.dat')){
+		
+		if(isset(Auth::check_login()['au_language_vc']))
+		{
+			$preffered_language = Auth::check_login()['au_language_vc'];
+		} 
+		else
+		{
+			$preffered_language = Settings::get('loreji_system_lang');
+		}	
+
+		if(!file_exists(CACHEPATH.'/languagecache'.$preffered_language.'.dat')){
 			// Read all english language files from Loreji self
 			$languages = array();
 
-			if(isset(Auth::check_login()['au_language_vc']))
-			{
-				$preffered_language = Auth::check_login()['au_language_vc'];
-			} 
-			else
-			{
-				$preffered_language = Settings::get('loreji_system_lang');
-			}
 
 			// Always take the english as DEFAULT language
 			include(SYSROOT."/language/EN.language.php");
 
 			// Check if english is not the default language.
 			if($preffered_language !== "EN"){
-				include(SYSROOT."/language/".Settings::get('loreji_system_lang').".language.php");
+				@include(SYSROOT."/language/".$preffered_language.".language.php");
 			}
 
 			// Get all language langs for EN, because EN is default
@@ -57,7 +59,7 @@ class Language extends Controller
 			if($preffered_language !== "EN"){
 				//echo "\nOverrule EN: \n";
 				// Fetch all the language files for the selected language. 
-				foreach (glob(MODPATH."/*/language/".Settings::get('loreji_system_lang').".language.php") as $filename) {
+				foreach (glob(MODPATH."/*/language/".$preffered_language.".language.php") as $filename) {
 					//echo $filename."\n";
 					include($filename);
 				}
@@ -65,18 +67,18 @@ class Language extends Controller
 
 			$_LANG['from_cache'] = 'FALSE';
 			if($use_cache === "true"){
-				file_put_contents(CACHEPATH.'/languagecache'.Settings::get('loreji_system_lang').'.dat', json_encode($_LANG));
+				file_put_contents(CACHEPATH.'/languagecache'.$preffered_language.'.dat', json_encode($_LANG));
 			} else {
-				if(file_exists(CACHEPATH.'/languagecache'.Settings::get('loreji_system_lang').'.dat')){
-					unlink(CACHEPATH.'/languagecache'.Settings::get('loreji_system_lang').'.dat');
+				if(file_exists(CACHEPATH.'/languagecache'.$preffered_language.'.dat')){
+					unlink(CACHEPATH.'/languagecache'.$preffered_language.'.dat');
 				}
 			}
 		} else {
-			$json = file_get_contents(CACHEPATH.'/languagecache'.Settings::get('loreji_system_lang').'.dat');
+			$json = @file_get_contents(CACHEPATH.'/languagecache'.$preffered_language.'.dat');
 
 			if(empty($json)){
-				if(file_exists(CACHEPATH.'/languagecache'.Settings::get('loreji_system_lang').'.dat')){
-					unlink(CACHEPATH.'/languagecache'.Settings::get('loreji_system_lang').'.dat');
+				if(@file_exists(CACHEPATH.'/languagecache'.$preffered_language.'.dat')){
+					unlink(CACHEPATH.'/languagecache'.$preffered_language.'.dat');
 				}
 				self::Init_files();
 			}
