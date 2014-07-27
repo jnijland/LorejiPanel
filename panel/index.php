@@ -12,6 +12,10 @@
 */
 require('init.php');
 
+if(Settings::get('force_ssl') === "true" && !isset($_SERVER['HTTPS'])){
+    $redirect = "https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+    header("Location: $redirect");
+}
 
 /**
 * Some kind of routing
