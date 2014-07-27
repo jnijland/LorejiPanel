@@ -130,7 +130,7 @@
           on: true
         }); 
         $('#hiddentogglessl').val('true');
-        $('#sslsettings').fadeIn( "fast", "linear" );
+        $('#sslsettings').slideDown( 1000, 'easeOutQuint' );
       <?php
       } else {
       ?>
@@ -138,7 +138,7 @@
           on: false
         }); 
         $('#hiddentogglessl').val('false');
-        $('#sslsettings').fadeOut( "fast", "linear" );
+        $('#sslsettings')..slideUp( 1000, 'easeOutQuint' );
       <?php
       }
       ?>
@@ -148,11 +148,11 @@
       if (active) {
         // Verborgen element naar 'on' zetten
         $('#hiddentogglessl').val('true');
-        $('#sslsettings').fadeIn( "fast", "linear" );
+        $('#sslsettings').slideDown( 1000, 'easeOutQuint' );
       } else {
         // Verborgen element naar 'off' zetten
         $('#hiddentogglessl').val('false');
-        $('#sslsettings').fadeOut( "fast", "linear" );
+        $('#sslsettings').slideUp( 1000, 'easeOutQuint' );
       }
     });
 
