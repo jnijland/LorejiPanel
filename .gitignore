@@ -1,1 +1,2 @@
 panel/modules/home/hooks/Test.OnDaemonHook.php
+panel/cache/*
