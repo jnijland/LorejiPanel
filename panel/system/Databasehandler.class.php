@@ -332,6 +332,7 @@ global $db;
 try {
     $db = new Databasehandler("mysql:host=" . MYSQL_HOST . ";dbname=" . MYSQL_DBMS, MYSQL_USER, MYSQL_PASS);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+   // $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 } catch (PDOException $e) {
     $error_html = "<style type=\"text/css\"><!--
             .dbwarning {

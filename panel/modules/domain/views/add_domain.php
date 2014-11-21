@@ -15,7 +15,11 @@
 
 <div class="contentpanel">
 
-
+    <?php 
+    $cookie = Cookie::get_once('error');
+    if($cookie == 'domainexist'){ echo Html::set_flash_message('This domain already exists!', 'danger'); } 
+    if($cookie == 'tooshort'){ echo Html::set_flash_message('This domain is invalid.', 'danger'); }
+    ?>
 
     <div class="row">
       <div class="col-sm-12 col-md-12">
@@ -73,9 +77,18 @@
 
                     <div class="form-group">
                       <label class="col-sm-4 control-label"><?php echo Language::get('domain.form.label.subdomain'); ?><span class="asterisk">*</span>:</label>
-                      <div class="col-sm-8">
+                      <div class="col-sm-4">
                         <input type="text"  name="domain" class="form-control" placeholder="<?php echo Language::get('domain.form.placeholder.subdomain'); ?>" required />
                         <input type="hidden" name="type" value="2">
+                      </div>
+                      <div class="col-sm-4">
+                      <select class="form-control" name="rootdomain" required>
+                        <?php
+                        foreach ($domains as $value) {
+                          echo '<option value=".'.$value['vh_domain_vc'].'">.'.$value['vh_domain_vc'].'</option>';
+                        }
+                        ?>
+                        </select>
                       </div>
                     </div>
 
@@ -96,7 +109,7 @@
 
                   </div><!-- panel-body -->
                   <div class="panel-footer">
-                    <button class="btn btn-primary pull-right"><?php echo Language::get('global.btn.save'); ?></button>
+                    <button type="submit" class="btn btn-primary pull-right"><?php echo Language::get('global.btn.save'); ?></button>
                   </div><!-- panel-footer -->
                 </div><!-- panel-default -->
               </form>

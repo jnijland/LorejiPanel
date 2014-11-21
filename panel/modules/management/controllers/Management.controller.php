@@ -35,6 +35,11 @@ class Management extends Controller
 			}
 
 		}
+
+		$query = Controller::db()->prepare("SELECT * FROM settings WHERE se_visible_en='1' ORDER BY se_type_vc ASC");
+		$query->execute();
+		$fields = $query->fetchAll(PDO::FETCH_ASSOC);
+		Template::bind('fields',$fields);
 		Parent::view('index');
 	}
 
@@ -74,6 +79,24 @@ class Management extends Controller
 		Parent::view('userlist');
 	}
 
+	public static function action_Modulesettings()
+	{	
+		if(Request::method() === "POST")
+		{
+			$post = (array) Request::post();
+			$module = $post['module'];
+			unset($post['module']);
+			var_dump($post);
+			foreach ($post as $key => $value) {
+				Module::setSetting($module, htmlentities($key), htmlentities($value));
+			}
+			Cookie::set('savedok', time());
+			Route::redirect('/management/modulesettings');
+		}
+		Template::bind('active_modules', $GLOBALS['modules_active']);
+		Parent::view('modulesettings');
+	}
+
 	/**
 	*
 	*	The generate_user_list() generates the userlist
@@ -105,38 +128,5 @@ class Management extends Controller
 		return $userlist;
 	}
 
-
-	/**
-	*
-	*	The cli_adminpass() resets the admin password
-	*
-	* @author Ramon Smit  <ramon@daltcore.com>
-	* @version 0.1.0
-	* @package Core
-	*/
-	public static function cli_adminpass()
-	{
-		$yesno = Cli::input("Do you really want to reset the admin password? [yes/no]:");
-		if(strtolower($yesno) !== 'yes')
-		{
-			printf("Exit admin password reset!\n");
-			exit;
-		}
-
-		$password = Cli::secure_input("Enter new password:");
-		$password1 = Cli::secure_input("Re-enter new password:");
-
-		if($password != $password1)
-		{
-			exit("Passwords doesn't match!\n");
-		}
-
-		$newpass = Encryption::encrypt($password);
-
-		$query = Parent::db()->prepare("UPDATE auth_users SET au_password_vc=:newpass WHERE au_email_vc='admin'");
-		$query -> bindParam(':newpass', $newpass);
-		$query->execute();
-		printf("New password is set!\n");
-	}
 }
 ?>

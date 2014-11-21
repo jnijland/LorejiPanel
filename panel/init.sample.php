@@ -66,32 +66,42 @@ if(!defined('MYSQL_PASS')) define('MYSQL_PASS', '{{INSTALL_MYSQLPASS}}');
 if(!defined('MYSQL_DBMS')) define('MYSQL_DBMS', 'loreji_core');
 
 // Load every system controller
-foreach (glob(SYSPATH."/*.class.php") as $filename) {
+foreach (glob(SYSPATH.DS."*.class.php") as $filename) {
 	require($filename);
 }
 
+require(MODPATH.DS.'auth'.DS.'controllers'.DS.'auth.controller.php');
+require(MODPATH.DS.'language'.DS.'controllers'.DS.'language.controller.php');
+// Lets do the language init
+Language::Init_files();
+
 // Read module.json files
 $modules_json_array = array();
+$GLOBALS['modules_active'] = NULL;
 foreach (glob(MODPATH."/*/config/module.json") as $filename) {
 	//require($filename);
 	$inner_json = file_get_contents($filename);
 	$json_array = json_decode($inner_json);
 	$modules_json_array[] = $json_array;
 	foreach ($json_array->permissions as $key => $value) {
-		$perm = Module::Permission_database($value);
-		if($perm === "include_ok")
+		$perm = Module::Permission_system_database($value);
+		if($perm === "PERM_RUN_OK")
 		{
 			// Load every module controller
-			foreach (glob(MODPATH."/".$json_array->name."/controllers/*.controller.php") as $filename) {
+			foreach (glob(MODPATH.DS.$json_array->name.DS."controllers".DS."*.controller.php") as $filename) {
 				$innerfile = file_get_contents($filename);
-				require_once($filename);
+				if(Module::Check_illigal_Calls($innerfile, $json_array->permissions, $json_array->name) === true){
+					require_once($filename);
+					$GLOBALS['modules_active'][] = $json_array;
+				}	
 			}
 		}
 	}
 }	
 
+// This contains all  the modules!
 $GLOBALS['modules'] = $modules_json_array;
 
-// Lets do the language init
-Language::Init_files();
+// This contains only the loaded modules! 
+//print_r($GLOBALS['modules_active']);
 ?>

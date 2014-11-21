@@ -22,7 +22,11 @@ class Cookie
      * @package Core
      */
     public static function set($key, $value, $expire=9999,$path='/')
-    {
+    {   
+        if( ! isset($value) OR empty($value))
+        {
+            $value = NULL;
+        }
         setcookie($key, encryption::encrypt($value), time()+$expire, $path);
 	}
 	
@@ -37,9 +41,42 @@ class Cookie
      */
     public static function get($key)
     {
-    	if(isset($_COOKIE[$key])){
-			return encryption::decrypt(@$_COOKIE[$key]);
-		}
+        if(isset($_COOKIE[$key])){
+            return encryption::decrypt(@$_COOKIE[$key]);
+        }
+    }
+
+    /**
+     * The get_omce() function loads the sting from the cookie and then destroys it
+     * 
+     * @author Ramon J. A. Smit <ramon@daltcore.com>
+     * @param String $key The cookie key
+     * @return String with the cookie value
+     * @version 0.1.0
+     * @package Core
+     */
+    public static function get_once($key)
+    {
+        if(isset($_COOKIE[$key])){
+            $cookie = encryption::decrypt(@$_COOKIE[$key]);
+            self::destroy($key);
+            return $cookie;
+        }
+    }
+
+    /**
+     * The destroy() function destorys a cookie
+     * 
+     * @author Ramon J. A. Smit <ramon@daltcore.com>
+     * @param String $key The cookie key
+     * @return Boolean always true
+     * @version 0.1.0
+     * @package Core
+     */
+    public static function destroy($key)
+    {
+        unset($_COOKIE[$key]);
+        setcookie($key, '', time()-1, '/');
     }
 }
 ?>

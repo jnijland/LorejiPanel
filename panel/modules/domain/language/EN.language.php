@@ -35,7 +35,7 @@
 	$_LANG['domain.form.placeholder.newdir'] = 'New directory';
 
 	$_LANG['domain.form.addsubdomain'] = 'Ádd a new sub-domain';
-	$_LANG['domain.form.placeholder.subdomain'] = 'sub.mydomain.com';
+	$_LANG['domain.form.placeholder.subdomain'] = 'sub';
 	$_LANG['domain.form.label.subdomain'] = 'Sub-domain';
 
 	// edit.php
@@ -48,5 +48,5 @@
 	// Menu
 	$_LANG['domain.menu.title'] = 'Domains';
 	$_LANG['domain.menu.overview'] = 'Overview';
-	$_LANG['domain.menu.adddomain'] = 'Add Domains';
+	$_LANG['domain.menu.adddomain'] = 'Add domain';
 ?>

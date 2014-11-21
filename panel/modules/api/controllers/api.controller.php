@@ -5,12 +5,10 @@ class Api extends Controller
 	// Class namespace 
 	static $namespace = "com.daltcore.loreji\Api";
 
-	public static function action_Index()
-	{	
-		Auth::$no_check = TRUE;
+
+	static public function __callStatic($method, $args) {
 		Template::$auto_render = FALSE;
-		header('Content-Type: application/json');
-		echo json_encode(array('auth' => 'false', 'error' => array('code' => '403', 'desc' => 'User didn\'t login')));
+		echo '{"error":"404 - Method not found"}';
 	}
 
 	/* *
@@ -59,9 +57,5 @@ class Api extends Controller
 		}
 	}
 
-	public static function check_api_key()
-	{
-		return true;
-	}
 }
 

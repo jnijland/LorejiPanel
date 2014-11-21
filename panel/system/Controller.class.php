@@ -54,7 +54,7 @@ class Controller
 	}
 
 	/**
-     * The module_array() function extends the DB for the modules
+     * The module_array() function returns the global for the modules
      * 
      * @author Ramon J. A. Smit <ramon@daltcore.com>
 	 * @return Array object with module list 
@@ -67,7 +67,7 @@ class Controller
 	}
 
 	/**
-     * The user() function extends the DB for the modules
+     * The user() function get the current user
      * 
      * @author Ramon J. A. Smit <ramon@daltcore.com>
      * @param String $name The row to get from the user option

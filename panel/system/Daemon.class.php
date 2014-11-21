@@ -17,7 +17,7 @@ class Daemon
      * @version 0.1.0
      * @package Core
      */
-	static $vhost;
+	public static $vhost;
 
     /**
      * The Get_directory_size() function calculates the directory sizes
@@ -58,7 +58,7 @@ class Daemon
 	}
 
 	/**
-     * The Calculate_bandwidth() function calculates the bandwith usage
+     * The Calculate_bandwidth() function calculates the bandwith usage & turncate every month.
      * 
      * @author Ramon J. A. Smit <ramon@daltcore.com>
      * @param String $f_logs path to the log directory
@@ -69,6 +69,15 @@ class Daemon
      * @package Core
      */
 	public static function Calculate_bandwidth($f_logs, $f_username, $f_site) {
+
+		// We don't record for 1 hour. I'm sorry!
+		// Here we turncate the logfile. 
+		if(date('dh') == '0101'){	
+			file_put_contents($f_logs . DS . $f_username . DS . $f_site . '-bandwidth.log', '');
+			file_put_contents($f_logs . DS . $f_username . DS . $f_site . '-access.log', '');
+			file_put_contents($f_logs . DS . $f_username . DS . $f_site . '-error.log', '');
+			printf('Turncate apache logs'."\n");
+		}
 	    // Path to Apache's log file
 	    $ac_arr = @file($f_logs . DS . $f_username . DS . $f_site . '-bandwidth.log');
 	    // Splitting IP from the rest of the record
@@ -297,6 +306,24 @@ class Daemon
 		return $query->rowCount();
 	}
 
+
+	public static function Calculate_main_domains($userid)
+	{
+		$query = Daemon::db()->prepare("SELECT * FROM vhosts WHERE au_id_in=:userid AND vh_deleted_ts IS NULL AND vh_type_en='1'");
+		$query -> bindParam(':userid', $userid);
+		$query -> execute();
+		return $query->rowCount();
+	}
+
+
+	public static function Calculate_sub_domains($userid)
+	{
+		$query = Daemon::db()->prepare("SELECT * FROM vhosts WHERE au_id_in=:userid AND vh_deleted_ts IS NULL AND vh_type_en='2'");
+		$query -> bindParam(':userid', $userid);
+		$query -> execute();
+		return $query->rowCount();
+	}
+
 	/**
      * The Check_dirs() function check if system dirs exist, if not then create new
      * 
@@ -319,7 +346,7 @@ class Daemon
      * @version 0.1.0
      * @package Core
      */
-	public static function Loop_vhosts()
+	public static function Loop_vhosts($calculate_usage = TRUE)
 	{
 		// Get client information
 		$userquery = Daemon::db()->prepare('SELECT * FROM auth_users WHERE au_deleted_ts IS NULL');
@@ -350,85 +377,103 @@ class Daemon
 				{	
 					$vhost_directory = Settings::get('loreji_vhost_directory').DS.$row['au_email_vc'].DS.'public_html'.DS.$vhostrow['vh_path_vc'];
 					Daemon::Dir_exist_create($vhost_directory);
+					File::recurse_copy(STATICPATH.DS.'hostingready', $vhost_directory);
 					$vhostinsert = Daemon::db()->prepare("UPDATE vhosts SET vh_live_ts='".time()."' WHERE vh_id_in='".$vhostrow['vh_id_in']."'");
 					$vhostinsert->execute();
 				}
 				else
 				{	
 
-					// Calculate Diskspace, bandwidth & MySQL Size
-					$month_year = date('mY');
-
-					$vhostusage = Daemon::db()->prepare("SELECT * FROM vhost_usages WHERE vu_month_ts='".$month_year."' AND vh_id_in='".$vhostrow['vh_id_in']."'");
-					$vhostusage->execute();
-					$checkrow = $vhostusage->fetch(PDO::FETCH_ASSOC);
-
-					$databasequery = Daemon::db()->prepare("SELECT * FROM `databases` WHERE `au_id_in` = :userid AND `db_deleted_ts` IS NULL");
-					$databasequery->bindParam(':userid', $vhostrow['au_id_in']);
-					$databasequery->execute();
-
-					$db_size = 0; 
-					while($databaserow = $databasequery->fetch(PDO::FETCH_ASSOC))
+					if($calculate_usage == TRUE)
 					{
-						$link = mysqli_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, $databaserow['db_name_vc']) or print("Error " . mysqli_error($link));
-						$query = "SHOW TABLE STATUS" or print("Error in the consult.." . mysqli_error($link));
-						$result = $link->query($query);
-						while($rowz = mysqli_fetch_array($result)) {
-						  $db_size += $rowz["Data_length"] + $rowz["Index_length"];
+						// Calculate Diskspace, bandwidth & MySQL Size
+						$month_year = date('mY');
+
+						$vhostusage = Daemon::db()->prepare("SELECT * FROM vhost_usages WHERE vu_month_ts='".$month_year."' AND vh_id_in='".$vhostrow['vh_id_in']."'");
+						$vhostusage->execute();
+						$checkrow = $vhostusage->fetch(PDO::FETCH_ASSOC);
+
+						$databasequery = Daemon::db()->prepare("SELECT * FROM `databases` WHERE `au_id_in` = :userid AND `db_deleted_ts` IS NULL");
+						$databasequery->bindParam(':userid', $vhostrow['au_id_in']);
+						$databasequery->execute();
+
+						$db_size = 0; 
+						while($databaserow = $databasequery->fetch(PDO::FETCH_ASSOC))
+						{
+							$link = mysqli_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, $databaserow['db_name_vc']) or print("Error " . mysqli_error($link));
+							$query = "SHOW TABLE STATUS" or print("Error in the consult.." . mysqli_error($link));
+							$result = $link->query($query);
+							while($rowz = mysqli_fetch_array($result)) {
+							  $db_size += $rowz["Data_length"] + $rowz["Index_length"];
+							}
 						}
-					}
-					printf("Database size: \033[00;36m".Daemon::Format_bytes($db_size)."\033[0m (overall) \n");
+						printf("Database size: \033[00;36m".Daemon::Format_bytes($db_size)."\033[0m (overall) \n");
 
-					if($checkrow['vu_id_in'] > 0)
+						if($checkrow['vu_id_in'] > 0)
+						{	
+					 		$vhostusage = Daemon::db()->prepare("UPDATE vhost_usages SET 
+							    vu_bandwidthusage_in='".Daemon::Calculate_bandwidth($log_dir, $row['au_email_vc'], $vhostrow['vh_domain_vc'])."'
+							    ,
+							    vu_diskspaceusage_in='".(Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc']) + $db_size)."'
+							    ,
+							    vu_domaindiskusage_in='".(Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc'].DS.'public_html'.DS.$vhostrow['vh_path_vc']))."'
+							    ,
+							    vu_domain_in='".Daemon::Calculate_main_domains($vhostrow['au_id_in'])."'
+							    ,
+							    vu_subdomain_in='".Daemon::Calculate_sub_domains($vhostrow['au_id_in'])."'
+							    ,
+							    vu_lastupdate_in='".time()."'
+							    WHERE vu_month_ts='".$month_year."' AND vh_id_in='".$vhostrow['vh_id_in']."'");
+							$vhostusage->execute();
+						} else {
+							$vhostusage = Daemon::db()->prepare("INSERT INTO vhost_usages (vh_id_in, vu_month_ts, vu_bandwidthusage_in, vu_diskspaceusage_in, vu_domaindiskusage_in, vu_domain_in, vu_subdomain_in, vu_lastupdate_in)
+							      VALUES ('".$vhostrow['vh_id_in']."', '".$month_year."', '".Daemon::Calculate_bandwidth($log_dir, $row['au_email_vc'], $vhostrow['vh_domain_vc'])."', 
+							      	'".(Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc']) + $db_size)."', 
+							      	'".(Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc'].DS.'public_html'.DS.$vhostrow['vh_path_vc']))."', 
+							      	'".Daemon::Calculate_main_domains($vhostrow['au_id_in'])."', '".Daemon::Calculate_sub_domains($vhostrow['au_id_in'])."', '".time()."') ");
+							$vhostusage->execute();
+						}
+
+						printf("Bandwidth used: \033[00;36m".
+							Daemon::Format_bytes(Daemon::Calculate_bandwidth($log_dir, $row['au_email_vc'], $vhostrow['vh_domain_vc'])).
+							"\033[0m / \033[00;36m".
+							Daemon::Format_bytes($packagerow['pk_maxbandwidth_in']).
+							"\033[0m (per-vhost) \n");
+						printf("Diskspace used: \033[00;36m".
+							Daemon::Format_bytes(Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc'])).
+							"\033[0m / \033[00;36m".
+							Daemon::Format_bytes($packagerow['pk_maxdiskspace_in']).
+							"\033[0m (overall) \n");
+						printf("Diskspace used: \033[00;36m".
+							Daemon::Format_bytes(Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc'].DS.'public_html'.DS.$vhostrow['vh_path_vc'])).
+							"\033[0m / \033[00;36m".
+							Daemon::Format_bytes($packagerow['pk_maxdiskspace_in']).
+							"\033[0m (domain) \n");
+						// (Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc']) + $db_size)
+						printf("Total Diskspace used: \033[00;36m".
+							Daemon::Format_bytes((Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc']) + $db_size)).
+							"\033[0m / \033[00;36m".
+							Daemon::Format_bytes($packagerow['pk_maxdiskspace_in']).
+							"\033[0m (overall) \n");
+					}
+
+				}
+
+				if($calculate_usage == TRUE)
+				{
+					// User is over bandwidth
+					if(Daemon::Calculate_bandwidth($log_dir, $row['au_email_vc'], $vhostrow['vh_domain_vc']) > $packagerow['pk_maxbandwidth_in'])
 					{	
-				 		$vhostusage = Daemon::db()->prepare("UPDATE vhost_usages SET 
-						    vu_bandwidthusage_in='".Daemon::Calculate_bandwidth($log_dir, $row['au_email_vc'], $vhostrow['vh_domain_vc'])."'
-						    ,
-						    vu_diskspaceusage_in='".(Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc']) + $db_size)."'
-						    ,
-						    vu_domain_in='".Daemon::Calculate_domains($vhostrow['au_id_in'])."'
-						    ,
-						    vu_lastupdate_in='".time()."'
-						    WHERE vu_month_ts='".$month_year."' AND vh_id_in='".$vhostrow['vh_id_in']."'");
-						$vhostusage->execute();
-					} else {
-						$vhostusage = Daemon::db()->prepare("INSERT INTO vhost_usages (vh_id_in, vu_month_ts, vu_bandwidthusage_in, vu_diskspaceusage_in, vu_domain_in, vu_lastupdate_in)
-						      VALUES ('".$vhostrow['vh_id_in']."', '".$month_year."', '".Daemon::Calculate_bandwidth($log_dir, $row['au_email_vc'], $vhostrow['vh_domain_vc'])."', '".(Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc']) + $db_size)."', '".Daemon::Calculate_domains($vhostrow['au_id_in'])."', '".time()."') ");
-						$vhostusage->execute();
+						printf("\033[01;31mUser is overbandwidth! Setting vhost to static page\033[0m\n");
+						$vhostrow['vh_path_vc'] = "/etc/loreji/static/overbandwidth";
 					}
 
-					printf("Bandwidth used: \033[00;36m".
-						Daemon::Format_bytes(Daemon::Calculate_bandwidth($log_dir, $row['au_email_vc'], $vhostrow['vh_domain_vc'])).
-						"\033[0m / \033[00;36m".
-						Daemon::Format_bytes($packagerow['pk_maxbandwidth_in']).
-						"\033[0m (per-vhost) \n");
-					printf("Diskspace used: \033[00;36m".
-						Daemon::Format_bytes(Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc'])).
-						"\033[0m / \033[00;36m".
-						Daemon::Format_bytes($packagerow['pk_maxdiskspace_in']).
-						"\033[0m (overall) \n");
-					// (Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc']) + $db_size)
-					printf("Total Diskspace used: \033[00;36m".
-						Daemon::Format_bytes((Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc']) + $db_size)).
-						"\033[0m / \033[00;36m".
-						Daemon::Format_bytes($packagerow['pk_maxdiskspace_in']).
-						"\033[0m (overall) \n");
-
-
-				}
-
-				// User is over bandwidth
-				if(Daemon::Calculate_bandwidth($log_dir, $row['au_email_vc'], $vhostrow['vh_domain_vc']) > $packagerow['pk_maxbandwidth_in'])
-				{	
-					printf("\033[01;31mUser is overbandwidth! Setting vhost to static page\033[0m\n");
-					$vhostrow['vh_path_vc'] = "/etc/loreji/static/overbandwidth";
-				}
-
-				// User is over diskspace
-				if(Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc']) > $packagerow['pk_maxdiskspace_in'])
-				{	
-					printf("\033[01;31mUser is overdiskspace! Setting vhost to static page\033[0m\n");
-					$vhostrow['vh_path_vc'] = "/etc/loreji/static/overdiskspace";
+					// User is over diskspace
+					if(Daemon::Get_directory_size(Settings::get('loreji_vhost_directory').DS.$row['au_email_vc']) > $packagerow['pk_maxdiskspace_in'])
+					{	
+						printf("\033[01;31mUser is overdiskspace! Setting vhost to static page\033[0m\n");
+						$vhostrow['vh_path_vc'] = "/etc/loreji/static/overdiskspace";
+					}
 				}
 
 				Daemon::Build_vhost_entry($row, $vhostrow);
@@ -469,7 +514,7 @@ CustomLog "'.Settings::get('loreji_logs').'/admin/'.$domain.'-bandwidth.log" com
 <Directory "'.Settings::get('loreji_root').'">
 # Custom Directory settings are loaded below this line (if any exist)
 '.Settings::get('vhost_globaldir_entry').'
-Options FollowSymLinks
+Options +FollowSymLinks
 	AllowOverride All
 	Order allow,deny
 	Allow from all
@@ -498,7 +543,7 @@ CustomLog "'.Settings::get('loreji_logs').'/admin/'.$domain.'-bandwidth.log" com
 <Directory "'.Settings::get('loreji_root').'">
 # Custom Directory settings are loaded below this line (if any exist)
 '.Settings::get('vhost_globaldir_entry').'
-Options FollowSymLinks
+Options +FollowSymLinks
 	AllowOverride All
 	Order allow,deny
 	Allow from all
@@ -561,8 +606,8 @@ ServerName '.$vhost['vh_domain_vc'].'
 ServerAlias '.$vhost['vh_domain_vc'].' www.'.$vhost['vh_domain_vc'].'
 ServerAdmin '.$account['au_email_vc'].'
 DocumentRoot "'.$vhost_dir.'"
-'.$OPENBASEDIR.'
-'.$SUHOSIN.'
+'.((isset($OPENBASEDIR))? $OPENBASEDIR : '').'
+'.((isset($SUHOSIN))? $SUHOSIN : '').'
 ErrorLog "'.Settings::get('loreji_logs').DS.$account['au_email_vc'].DS.$vhost['vh_domain_vc'].'-error.log" 
 CustomLog "'.Settings::get('loreji_logs').DS.$account['au_email_vc'].DS.$vhost['vh_domain_vc'].'-access.log" combined
 CustomLog "'.Settings::get('loreji_logs').DS.$account['au_email_vc'].DS.$vhost['vh_domain_vc'].'-bandwidth.log" common
@@ -571,7 +616,7 @@ CustomLog "'.Settings::get('loreji_logs').DS.$account['au_email_vc'].DS.$vhost['
 '.$vhost['vh_direntries_lt'].'
 # Global directory settings (if exist)
 '.Settings::get('vhost_globaldir_entry').'
-Options FollowSymLinks Indexes
+Options +Indexes +FollowSymLinks -MultiViews
 AllowOverride All
 Order Allow,Deny
 Allow from all
@@ -580,7 +625,7 @@ AddType application/x-httpd-php .php
 ScriptAlias /cgi-bin/ "/_cgi-bin/"
 <location /cgi-bin>
 AddHandler cgi-script .cgi .pl
-Options ExecCGI Indexes
+Options +ExecCGI +Indexes
 </location>
 ErrorDocument 500 /_errorpages/500.html
 ErrorDocument 510 /_errorpages/510.html
@@ -608,8 +653,8 @@ ServerName '.$vhost['vh_domain_vc'].'
 ServerAlias '.$vhost['vh_domain_vc'].' www.'.$vhost['vh_domain_vc'].'
 ServerAdmin '.$account['au_email_vc'].'
 DocumentRoot "'.$vhost_dir.'"
-'.$OPENBASEDIR.'
-'.$SUHOSIN.'
+'.((isset($OPENBASEDIR))? $OPENBASEDIR : '').'
+'.((isset($SUHOSIN))? $SUHOSIN : '').'
 ErrorLog "'.Settings::get('loreji_logs').DS.$account['au_email_vc'].DS.$vhost['vh_domain_vc'].'-error.log" 
 CustomLog "'.Settings::get('loreji_logs').DS.$account['au_email_vc'].DS.$vhost['vh_domain_vc'].'-access.log" combined
 CustomLog "'.Settings::get('loreji_logs').DS.$account['au_email_vc'].DS.$vhost['vh_domain_vc'].'-bandwidth.log" common
@@ -618,7 +663,7 @@ CustomLog "'.Settings::get('loreji_logs').DS.$account['au_email_vc'].DS.$vhost['
 '.$vhost['vh_direntries_lt'].'
 # Global directory settings (if exist)
 '.Settings::get('vhost_globaldir_entry').'
-Options FollowSymLinks Indexes
+Options +Indexes +FollowSymLinks -MultiViews
 AllowOverride All
 Order Allow,Deny
 Allow from all
@@ -649,7 +694,15 @@ DirectoryIndex index.html index.htm index.php index.asp index.aspx index.jsp ind
 		self::$vhost = self::$vhost . $vhost_entry;
 	}
 
-
+	/**
+     * The build_ssl_entry() will build the ssl entry for the domain
+     * 
+     * @author Ramon J. A. Smit <ramon@daltcore.com>
+     * @param String $ssl_id The ssl id for this domain
+     * @return String $line the SSL information for the vhost
+     * @version 0.1.0
+     * @package Core
+     */
 	public static function build_ssl_entry($ssl_id)
 	{
 		$sslquery = Daemon::db()->prepare("SELECT * FROM ssl_cert WHERE sc_id_in=:certid");

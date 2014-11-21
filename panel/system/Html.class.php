@@ -19,12 +19,17 @@ class Html
      * @version 0.1.0
      * @package Core
      */
-	public static function set_flash_message($text, $type = 'success')
+	public static function set_flash_message($text, $type = 'success', $style = '')
 	{	
-		return '<div class="alert alert-'.$type.'">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                '.$text.'
-              </div>';
+      return '
+        <div class="row">
+            <div class="col-md-5 col-md-offset-3">
+                <div class="alert alert-'.$type.' loreji-alert" style="display:block; '.$style.'">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    '.$text.'
+                </div>
+            </div>
+        </div>';
 	}
 }
 ?>

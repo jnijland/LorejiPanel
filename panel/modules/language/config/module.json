@@ -10,6 +10,8 @@
     "permissions": {
         "0": "PERM_RUN",
         "1": "PERM_FILE",
-        "2": "PERM_INTERNET"
+        "2": "PERM_INTERNET",
+        "3": "PERM_READ_SETTINGS",
+        "4": "PERM_USE_CREDENTIALS"
     }
 }

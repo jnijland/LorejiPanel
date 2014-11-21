@@ -97,7 +97,7 @@ class System
      */
 	public static function Remote_ip()
 	{
-		return file_get_contents("http://loreji.com/php/ip.php");
+		return Http::get_response("http://loreji.com/api/ip");
 	}
 
 	/**

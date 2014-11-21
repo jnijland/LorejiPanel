@@ -8,6 +8,12 @@
 */
 
 /**
+ * Neat Output Buffering
+ */
+ob_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+/**
 * Start the Init
 */
 require('init.php');
@@ -29,7 +35,7 @@ $Route = Route::factory('controller/action');
 // Login
 if($Route->controller === "login"){
 
-	if(Auth::check_login()){
+	if(Auth::check_login(TRUE)){
 		Route::redirect('/home/index');
 	}
 
@@ -61,6 +67,39 @@ if($Route->controller === "lock"){
 	exit;
 }
 
+// Twoway authentication
+if($Route->controller === "twoway"){
+	Auth::$no_check = FALSE;
+	$ga = new GoogleAuthenticator();
+	Template::bind('qr', $ga->getQRCodeGoogleUrl('Loreji Panel: '.Auth::check_login()['au_username_vc'], Auth::check_login()['au_gasecret_vc']));
+	/*$secret = 'SMBEY4M477S6AQRT';*/
+	//$oneCode = $ga->getCode($secret);
+
+	if(Request::method() === 'POST')
+	{
+		$checkResult = $ga->verifyCode(Auth::check_login()['au_gasecret_vc'], Request::post('vcode'), 4);    // 2 = 2*30sec clock tolerance
+
+		if ($checkResult) {
+			Cookie::set('gauth', Request::post('vcode'), 60 * 60);
+		    Route::redirect('/home/index');
+		} else {
+			//Route::redirect('/twoway');
+		}
+	}
+
+	
+	// Set the base template
+	Template::$basetemplate = SYSROOT.DS.'panel'.DS.'twoway.php';
+
+	// Build the base template and execute PHP
+	Template::factory();
+
+	// Output of basetemplate 
+	Template::render();	
+	
+	exit;
+}
+
 // Doing some logout
 if($Route->controller === "logout"){
 	Route::controller(Route::make_controller('auth', 'logout'));
@@ -68,7 +107,7 @@ if($Route->controller === "logout"){
 }
 
 	
-	if(Auth::check_login() !== FALSE){
+	if(Auth::check_login(TRUE) !== FALSE){
 		/**
 		* Load the base template
 		*/
@@ -89,11 +128,11 @@ if($Route->controller === "logout"){
 	Route::controller(Route::make_controller($Route->controller, $Route->action));
 
 
-	if(Auth::$no_check === FALSE && Auth::check_login() === FALSE){
+	if(Auth::$no_check === FALSE && Auth::check_login(TRUE) === FALSE){
 		Route::redirect('/login');
 	}
 
-	if(Auth::check_login() !== FALSE){
+	if(Auth::check_login(TRUE) !== FALSE){
 		Template::render();
 	}
 	exit;

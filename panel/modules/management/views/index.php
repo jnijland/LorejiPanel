@@ -34,10 +34,7 @@
 
       <form class="form-horizontal form-bordered" method="POST">
         <?php
-        $query = Controller::db()->prepare("SELECT * FROM settings WHERE se_visible_en='1' ORDER BY se_type_vc ASC");
-        $query->execute();
-        $fields = $query->fetchAll(PDO::FETCH_ASSOC);
-              //var_dump($fields);
+        //var_dump($fields);
         foreach ($fields as $key => $value) {
 
 
@@ -86,7 +83,7 @@
           </div>';
 
           echo '<div class="form-group" style="display:'.(($value['se_value_vc'] === 'true' OR $value['se_value_vc'] === '1' OR (int)$value['se_value_vc'] > 0)? 'block':'none').'" id="forcessl">
-          <label class="col-sm-3 control-label">Force SSL <span class="asterisk">*</span></label>
+          <label class="col-sm-3 control-label">'.Language::get('ssl.enforce.enabled').' <span class="asterisk">*</span></label>
           <div class="col-sm-6">
             <div class="toggle toggle-success" id="tglforcessl"></div>
             <input type="hidden" name="force_ssl" id="forcesslhidden" value="" />
@@ -147,7 +144,21 @@
 </script>
 <?php
 }
+
+$loreji_ccunit_key = array(
+  "ip" => System::Remote_ip(),
+  "username" => MYSQL_USER,
+  "password" => MYSQL_PASS,
+  "key" => SEASALT
+);
 ?>
+<div class="form-group">
+  <label class="col-sm-3 control-label"><?php echo Language::get('ccunit.key'); ?></label>
+  <div class="col-sm-6">
+    <input type='text' class='form-control' name='loreji_ccunit_key' disabled="" value='<?php echo base64_encode(json_encode($loreji_ccunit_key));?>' />
+    <p class="help-block"><?php echo Language::get('ccunit.key.about'); ?></p>
+  </div>
+</div>
 </div>
 <div class="panel-footer">
   <div class="row">

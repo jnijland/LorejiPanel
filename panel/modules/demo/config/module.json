@@ -1,14 +1,32 @@
 {
-    "name": "demo",
-    "author": {
-        "name": "Loreji Team",
-        "email": "team@loreji.com"
-    },
-    "type": "system",
-    "version": "1.0",
-    "update_url": "http://loreji.com/module/demo/",
-    "permissions": {
-        "0": "PERM_RUN",
-        "1": "PERM_ALL"
-    }
+  "name":"demo",
+  "author":{
+    "name":"Loreji Team",
+    "email":"team@loreji.com"
+  },
+  "type":"system",
+  "version":"1.0",
+  "update_url":"http:\/\/loreji.com\/module\/demo\/",
+  "permissions":{
+    "1" :"PERM_DB",
+    "2" :"PERM_FILE",
+    "3" :"PERM_INTERNET",
+    "4" :"PERM_DAEMON",
+    "5" :"PERM_ACCESS_MYSQL_SSL",
+    "6" :"PERM_ACCESS_DIR_SSL",
+    "7" :"PERM_NO_LOCKSCREEN",
+    "8" :"PERM_USE_CREDENTIALS",
+    "9" :"PERM_USE_LSS_KEY",
+    "10":"PERM_READ_SETTINGS",
+    "11":"PERM_WRITE_SETTINGS",
+    "12":"PERM_READ_MODULE_SETTINGS",
+    "13":"PERM_WRITE_MODULE_SETTINGS",
+    "14":"PERM_READ_LOREJI_CONFIG",
+    "15":"PERM_WRITE_LOREJI_CONFIG"
+  },
+  "settings":{
+    "demo_setting":"Test string",
+    "demo_setting1":"Test string1",
+    "demo_setting2":"Test string2"
+  }
 }

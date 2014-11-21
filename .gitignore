@@ -1,2 +1,7 @@
 panel/modules/home/hooks/Test.OnDaemonHook.php
 panel/cache/*
+panel/bin/output/*
+configs/vhosts.conf
+panel/init.php
+panel/apps/roundcube/*
+ssl/

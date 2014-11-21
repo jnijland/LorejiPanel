@@ -27,9 +27,36 @@ Cli::remove_root_mail();
 $args = Cli::args();
 //print_r($args);
 
-if(!isset($args[2])){
+if(!isset($args[0]))
+{
+	die("Please give a valid command. 'loreji http ip'\n");
+}
+
+if(!isset($args[2]))
+{
 	$args[2] = NULL;
 }
-call_user_func_array(array(ucfirst($args[0]), 'cli_'.$args[1]), array($args[2]));
+
+if(!class_exists('Cli_'.ucfirst($args[0])))
+{
+	die("Extension '{$args[0]}' is not found.\n");
+} 
+elseif(!method_exists('Cli_'.ucfirst(strtolower($args[0])),strtolower($args[1])))
+{
+	die("Function '{$args[1]}' is not found.\n");
+}
+
+// Creat new args variable
+$function_args = $args;
+
+// Remove the class and method values
+unset($function_args[0]);
+unset($function_args[1]);
+
+// Create string for arguments
+$function_args = implode(' ', array_values($function_args));
+//print_r($function_args);
+
+@call_user_func_array(array('Cli_'.ucfirst(strtolower($args[0])), strtolower($args[1])), array($function_args));
 
 ?>

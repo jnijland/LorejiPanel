@@ -21,7 +21,8 @@ class Url
 	public static function site($dirtyurl)
 	{	
         if (php_sapi_name() != 'cli') {
-	   	   return sprintf("%s://%s%s", isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http', $_SERVER['HTTP_HOST'], $dirtyurl);
+            if (substr($dirtyurl, 0, 1) !== '/') { $dirtyurl = '/'.$dirtyurl; }
+            return sprintf("%s://%s%s", isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http', $_SERVER['HTTP_HOST'], $dirtyurl);
         }
 	}
 

@@ -1,0 +1,17 @@
+{
+  "name":"Mail",
+  "author":{
+    "name":"Loreji Team",
+    "email":"team@loreji.com"
+  },
+  "type":"system",
+  "version":"1.0",
+  "update_url":"http:\/\/loreji.com\/module\/mail\/",
+  "permissions":{
+    "0" :"PERM_RUN",
+    "1" :"PERM_DB",
+    "2" :"PERM_DAEMON",
+    "3" :"PERM_USE_CREDENTIALS",
+    "4" :"PERM_APPEND_MAIN_MENU"
+  }
+}

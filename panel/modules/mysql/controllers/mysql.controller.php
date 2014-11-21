@@ -38,5 +38,59 @@ class Mysql extends Controller
 
 		return new PDO("mysql:host=".$server.";dbname=".$databasename, $user, $pass );
 	}
+
+	/**
+	 * Action to add mysql user
+	 * @return [type] [description]
+	 */
+/*	public static function action_adduser()
+	{
+
+	}
+
+	public static function action_index()
+	{
+
+	}
+
+	public static function action_remove()
+	{
+
+	}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 ?>

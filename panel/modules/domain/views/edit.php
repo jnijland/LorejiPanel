@@ -138,7 +138,7 @@
           on: false
         }); 
         $('#hiddentogglessl').val('false');
-        $('#sslsettings')..slideUp( 1000, 'easeOutQuint' );
+        $('#sslsettings').slideUp( 1000, 'easeOutQuint' );
       <?php
       }
       ?>

@@ -32,10 +32,16 @@ class Domain extends Controller
 	{	
 		if(Request::method() === "POST")
 		{	
-			print_r(Request::post());
-			self::Add_domain(Request::post('domain'), Request::post('type'), Request::post('directory'));
+			//print_r(Request::post());
+			self::Add_domain(Request::post('domain'), Request::post('type'), Request::post('directory'), Request::post('rootdomain'));
 			Route::redirect('/domain/index');
 		}
+		$userid = parent::User('au_id_in');
+		$domainquery = parent::db()->prepare("SELECT * FROM vhosts WHERE au_id_in=:userid AND vh_type_en='1' AND vh_deleted_ts IS NULL");
+		$domainquery->bindParam(':userid', $userid);
+		$domainquery->execute();
+		$domains = $domainquery->fetchAll();
+		Template::bind('domains', $domains);
 		parent::view('add_domain');
 	}
 
@@ -80,7 +86,7 @@ class Domain extends Controller
 		$domainquery->bindParam(':userid', $userid);
 		$domainquery->execute();
 
-		$server_ip = file_get_contents('http://loreji.com/php/ip.php');
+		$server_ip = Http::get_response('https://loreji.com/api/ip');
 		$domainlist = "";
 		$i=0;
 		while($row = $domainquery->fetch(PDO::FETCH_ASSOC))
@@ -97,7 +103,7 @@ class Domain extends Controller
                 <td>'.$row['vh_dns_tmp'].'</td>
                 <td class="table-action">
                   <a href="/domain/edit/'.$row['vh_id_in'].'" class="delete-row btn btn-primary" style="color: #FFF;"><i class="fa fa-pencil"></i></a>
-                  <a href="/domain/remove/'.$row['vh_id_in'].'" class="delete-row btn btn-danger removePopupLink" data-type="domain" data-name="'.$row['vh_domain_vc'].'" data-id="'.$row['vh_id_in'].'" rel="tooltip" data-original-title="Domein verwijderen" style="color: #FFF;"><i class="fa fa-trash-o"></i></a>
+                  <a href="/domain/remove/'.$row['vh_id_in'].'" class="delete-row btn btn-danger removePopupLink" data-type="domain" data-name="'.$row['vh_domain_vc'].'" data-id="'.$row['vh_id_in'].'" data-action=""  data-url="/domain/remove/{{id}}" rel="tooltip" data-original-title="Domein verwijderen" style="color: #FFF;"><i class="fa fa-trash-o"></i></a>
                 </td>
               </tr>';
 		}
@@ -105,19 +111,24 @@ class Domain extends Controller
 		return $domainlist;
 	}
 
-	/* *
-	*
-		The Add_domain() function handles the creation of domains and subdomains
-	*
-	* @Author Ramon Smit  <ramon@daltcore.com>
-	* @Version 0.1.0
-	* @Depricated n/a
-	* @Package Core
-	*/
-	public static function Add_domain($domain, $type=1, $path = 'NULL')
+
+	/**
+	 * Add domain to database (domains and subdomains)
+	 * 
+	 * @author Ramon Smit  <ramon@daltcore.com>
+	 * @version 0.1.0
+	 * @param string  $domain
+	 * @param integer $type
+	 * @param string  $path
+	 * @param string  $rootdomain
+	 */
+	public static function Add_domain($domain, $type=1, $path = 'NULL', $rootdomain = NULL)
 	{
-		$domainname = $domain;
-		
+
+		if($rootdomain != NULL)
+		{
+			$domain = $domain.$rootdomain;
+		}	
 
 		if($path == 'NULL')
 		{
@@ -129,6 +140,22 @@ class Domain extends Controller
 		}
 
 
+		$domainquery = parent::db()->prepare("SELECT * FROM vhosts WHERE vh_deleted_ts IS NULL");
+		$domainquery->execute();
+		$domains = $domainquery->fetchAll();
+		if(self::in_array_r($domain, $domains))
+		{
+			Cookie::set('error', 'domainexist');
+			Route::redirect('/domain/domains');
+			exit;
+		}
+
+		if(strlen($domain) < 3)
+		{
+			Cookie::set('error', 'tooshort');
+			Route::redirect('/domain/domains');
+			exit;
+		}
 
 		$time = time();
 
@@ -140,7 +167,7 @@ class Domain extends Controller
 		VALUES 
 		(:userid, :domainname, :vhostname, :domaintype, :suhosin, :openbasedir, :timestamp)");
 		$domainquery->bindParam(':userid', 		$userid);
-		$domainquery->bindParam(':domainname', 	$domainname);
+		$domainquery->bindParam(':domainname', 	$domain);
 		$domainquery->bindParam(':vhostname',	$vhostname);
 		$domainquery->bindParam(':domaintype', 	$type);
 		$domainquery->bindParam(':suhosin', $globalSuhosin);
@@ -206,6 +233,16 @@ class Domain extends Controller
 		$domain_query->execute();
 		return $domain_query->fetchAll(PDO::FETCH_ASSOC);
 	}
+
+	public static function in_array_r($needle, $haystack, $strict = false) {
+    foreach ($haystack as $item) {
+        if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && self::in_array_r($needle, $item, $strict))) {
+            return true;
+        }
+    }
+
+    return false;
+}
 }
 
 ?>

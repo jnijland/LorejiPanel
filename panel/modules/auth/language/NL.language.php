@@ -19,6 +19,6 @@
 	$_LANG['auth.forgotpassword'] = 'Wachtwoord vergeten?';
 	$_LANG['auth.createdby'] = 'Ontwikkeld door:';
 	$_LANG['auth.popup.passfail'] = 'Je wachtwoord is incorrect!';
-	$_LANG['auth.popup.nouser'] = 'Je gebruikersnaam is incorrect';
-	$_LANG['auth.popup.noperm'] = 'Je kan niet inloggen. Neem contact op met uw hosting provider';
+	$_LANG['auth.popup.nouser'] = 'Je gebruikersnaam is incorrect!';
+	$_LANG['auth.popup.noperm'] = 'Je kan niet inloggen. Neem contact op met jouw hosting provider';
 ?>

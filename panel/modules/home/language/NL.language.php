@@ -31,6 +31,8 @@
 
 	$_LANG['home.dashboard.newsandanouncements'] = 'Nieuws en Aankondigingen';
 	$_LANG['home.dashboard.newsandanouncements.desc'] = 'Loreji Nieuws';
+	$_LANG['home.dashboard.newstitle'] = 'Titel';
+	$_LANG['home.dashboard.newsdate'] = 'Datum';
 
 	$_LANG['home.dashboard.usage'] = 'Gebruik';
 	$_LANG['home.dashboard.usage.desc'] = 'Het gebruik van uw pakket bronnen';

@@ -1,10 +1,10 @@
 <?php
-if(Auth::check_login()['au_actlocked_en'] === '1')
+if(Auth::$instance->au_actlocked_en === '1')
 {
   Route::redirect('/lock');
 }
 ?><!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="height: 100%;">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -40,6 +40,7 @@ if(Auth::check_login()['au_actlocked_en'] === '1')
   <link href="<?php echo Url::site('/panel/css/jquery.datatables.css'); ?>" rel="stylesheet">
   <link href="<?php echo Url::site('/panel/css/font-mfizz.css'); ?>" rel="stylesheet">
   <link href="<?php echo Url::site('/panel/css/jquery.circliful.css'); ?>" rel="stylesheet" type="text/css" />
+  <link href="<?php echo Url::site('/panel/css/font-awesome.min.css'); ?>" rel="stylesheet" type="text/css" />
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
@@ -53,13 +54,13 @@ if(Auth::check_login()['au_actlocked_en'] === '1')
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="myModalLabel">{{name}} verwijderen?</h4>
+          <h4 class="modal-title" id="myModalLabel"><?php echo Language::get('global.modal.remove.title', array('{{name}}'), array('{{name}}')); ?></h4>
         </div>
         <div class="modal-body" style="text-align: center;">
-          Weet u zeker dat u <strong>{{name}}</strong> wilt verwijderen?
+          <?php echo Language::get('global.modal.remove.body', array('{{name}}'), array('{{name}}')); ?>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Nee</button><a href="{{url}}" class="btn btn-danger">Ja</a>
+          <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo Language::get('global.no'); ?></button><a href="{{url}}" class="btn btn-danger"><?php echo Language::get('global.yes'); ?></a>
         </div>
       </div>
     </div>
@@ -72,14 +73,14 @@ if(Auth::check_login()['au_actlocked_en'] === '1')
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="myModalLabel">{{name}}</h4>
+          <h4 class="modal-title" id="myModalLabel"><?php echo Language::get('global.modal.update.title', array('{{name}}'), array('{{name}}')); ?></h4>
         </div>
         <div class="modal-body">
-          Are you sure that you want to upgrade the module <strong>{{name}}</strong> to a new version?
+          <?php echo Language::get('global.modal.update.body', array('{{name}}'), array('{{name}}')); ?>
           <div class="permissionwrap">
 
             <div class="permissionheader">
-              Permissions:
+              <a><?php echo Language::get('global.permission.title.view'); ?>:</a>
             </div>
 
             <div class="permissionlist">
@@ -91,7 +92,7 @@ if(Auth::check_login()['au_actlocked_en'] === '1')
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Nee</button><a href="{{url}}" class="btn btn-warning">Ja</a>
+          <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo Language::get('global.no'); ?></button><a href="{{url}}" class="btn btn-warning"><?php echo Language::get('global.yes'); ?></a>
         </div>
       </div>
     </div>
@@ -104,14 +105,14 @@ if(Auth::check_login()['au_actlocked_en'] === '1')
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="myModalLabel">{{name}}</h4>
+          <h4 class="modal-title" id="myModalLabel"><?php echo Language::get('global.modal.install.title', array('{{name}}'), array('{{name}}')); ?></h4>
         </div>
         <div class="modal-body">
-          Are you sure that you want to install the module <strong>{{name}}</strong>
+          <?php echo Language::get('global.modal.install.body', array('{{name}}'), array('{{name}}')); ?>
           <div class="permissionwrap">
 
             <div class="permissionheader">
-              Permissions:
+              <a><?php echo Language::get('global.permission.title.view'); ?>:</a>
             </div>
 
             <div class="permissionlist">
@@ -123,7 +124,7 @@ if(Auth::check_login()['au_actlocked_en'] === '1')
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Nee</button><a href="{{url}}" class="btn btn-success">Ja</a>
+          <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo Language::get('global.no'); ?></button><a href="{{url}}" class="btn btn-success"><?php echo Language::get('global.yes'); ?></a>
         </div>
       </div>
     </div>
@@ -131,8 +132,12 @@ if(Auth::check_login()['au_actlocked_en'] === '1')
 </script>
 
 </head>
-
-<body class="<?php echo (Cookie::get('nav_collapse') === 'true')? 'leftpanel-collapsed' : ''; ?>">
+<?php
+$isMobile = (bool)preg_match('#\b(ip(hone|od|ad)|android|opera m(ob|in)i|windows (phone|ce)|blackberry|tablet'.
+                    '|s(ymbian|eries60|amsung)|p(laybook|alm|rofile/midp|laystation portable)|nokia|fennec|htc[\-_]'.
+                    '|mobile|up\.browser|[1-4][0-9]{2}x[1-4][0-9]{2})\b#i', $_SERVER['HTTP_USER_AGENT'] );
+?>
+<body class="<?php echo (Cookie::get('nav_collapse') === 'true' && $isMobile === false)? 'leftpanel-collapsed' : ''; ?>"  style="min-height: 100%;">
 
   <!-- Preloader -->
   <div id="preloader">
@@ -151,6 +156,14 @@ if(Auth::check_login()['au_actlocked_en'] === '1')
 
       <div class="mainpanel">
         {{base::topmenu}}
+        
+        <?php if(Cookie::get('shadow') != ''): ?>
+        <div class="col-lg-12" style="background-color: #d9534f; z-index:1; color:#FFFFFF; text-align:center;margin-bottom: 10px;height: 27px;padding-top: 4px;">
+          <span class="pull-left" rel="tooltip" data-original-title="Shadowing mode enables the support/administrator to manage the shadowed accounts.">[Shadowing Mode]</span>
+          <?php echo Auth::check_shadow_admin()['au_fullname_vc']; ?> shadows <em><?php echo Auth::$instance->au_fullname_vc; ?></em>
+          <span class="pull-right"  rel="tooltip" data-original-title="End this shadowing session."><a href="<?php echo URL::site('auth/logoutshadow'); ?>" style="color: #FFF;">[logout]</a></span>
+        </div>
+      <?php endif; ?>
 
         {{base::viewpanel}}
 
@@ -182,7 +195,7 @@ var delay_update = 1500;
 function timeout_cookie() {
   var delay_cookie = 10000;
   setTimeout(function(){
-    console.log('CookieCheck(10_sec): ' + $.cookie("uid"));
+    // console.log('CookieCheck(10_sec): ' + $.cookie("uid"));
     if($.cookie("uid") == undefined){
       $.removeCookie("uid");
       window.location = "<?php echo Url::site('/login'); ?>";
@@ -225,12 +238,14 @@ $('.removePopupLink').on('click', function(e){
 
   var id   = $link.data('id'),
   name = $link.data('name'),
-  url  = $link.parents('.panel-body').data('url');
+  action = $link.data('action'),
+  url  = $link.data('url');
 
   template = $.trim( $('#templates-modal-delete').html() );
 
   html = template.replace( /{{url}}/ig, url )
   .replace( /{{id}}/ig, id )
+  .replace( /{{action}}/ig, action )
   .replace( /{{name}}/ig, name );
   $('body').append(html);
 
@@ -246,19 +261,29 @@ $('.PopupLinkUpdate').on('click', function(e){
   }
 
   $link = $(this);
-
+  console.log($link);
   var id   = $link.data('id'),
   name = $link.data('name'),
+  action = $link.data('action'),
   permlist = $link.data('permlist'),
-  url  = $link.parents('.panel-body').data('url');
+  url  = $link.data('url');
+
+  console.log(id);
+  console.log(name);
+  console.log(action);
+  console.log(permlist);
+  console.log(url);
 
   template = $.trim( $('#templates-modal-update').html() );
 
   html = template.replace( /{{url}}/ig, url )
   .replace( /{{id}}/ig, id )
-  .replace (/{{permissionlist}}/ig, Base64.decode(permlist))
+  .replace( /{{permissionlist}}/ig, Base64.decode(permlist))
+  .replace( /{{action}}/ig, action )
   .replace( /{{name}}/ig, name );
   $('body').append(html);
+
+  console.log(html);
 
   $('#popupModalUpdate').modal();
 });
@@ -275,14 +300,16 @@ $('.PopupLinkInstall').on('click', function(e){
 
   var id   = $link.data('id'),
   name = $link.data('name'),
+  action = $link.data('action'),
   permlist = $link.data('permlist'),
-  url  = $link.parents('.panel-body').data('url');
+  url  = $link.data('url');
 
   template = $.trim( $('#templates-modal-install').html() );
 
   html = template.replace( /{{url}}/ig, url )
   .replace( /{{id}}/ig, id )
-  .replace (/{{permissionlist}}/ig, Base64.decode(permlist))
+  .replace(/{{permissionlist}}/ig, Base64.decode(permlist))
+  .replace( /{{action}}/ig, action )
   .replace( /{{name}}/ig, name );
   $('body').append(html);
 
@@ -292,8 +319,13 @@ $('.PopupLinkInstall').on('click', function(e){
 setTimeout(function(){ $('.loreji-alert').slideDown( "slow", 'easeOutQuint' ); setTimeout(function(){ $('.loreji-alert').slideUp( 1500, 'easeOutQuint' ); }, 5000); }, 1000);
 setTimeout(function(){ $('.permission-warning').slideDown("slow", 'easeOutQuint'); }, 1500);
 
-console.log(screen.height);
-console.log(screen.width);
+/*console.log(screen.height);
+console.log(screen.width);*/
+
+$('.mainpanel').height($(document).height());
+$('[rel=tooltip]').tooltip({
+  placement:'bottom',
+});
 
 });
 </script>

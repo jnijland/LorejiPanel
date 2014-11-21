@@ -1,0 +1,15 @@
+{
+  "name":"FTP",
+  "author":{
+    "name":"Loreji Team",
+    "email":"team@loreji.com"
+  },
+  "type":"panel",
+  "version":"1.0",
+  "permissions":{
+    "1" :"PERM_RUN",
+    "2" :"PERM_DB",
+    "3" :"PERM_USE_CREDENTIALS",
+    "4" :"PERM_APPEND_MAIN_MENU"
+  }
+}

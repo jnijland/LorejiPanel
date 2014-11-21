@@ -31,6 +31,8 @@
 
 	$_LANG['home.dashboard.newsandanouncements'] = 'Nieuws and Announcements';
 	$_LANG['home.dashboard.newsandanouncements.desc'] = 'Loreji News';
+	$_LANG['home.dashboard.newstitle'] = 'Title';
+	$_LANG['home.dashboard.newsdate'] = 'Date';
 
 	$_LANG['home.dashboard.usage'] = 'Usage';
 	$_LANG['home.dashboard.usage.desc'] = 'Usage of your package resources';

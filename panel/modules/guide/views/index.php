@@ -10,16 +10,11 @@
     </div>
     
     <div class="contentpanel">
-    <?php
-	$Markdown = new Markdown();
-	$mdfile = @Route::$params->params[0];
-	if($mdfile === NULL){
-		$mdfile = 'home';
-	}
-	$MD_file = file_get_contents(SYSROOT.DS.'modules'.DS.Route::$params->controller.DS.'views'.DS.'markdown'.DS.$mdfile.'.md');
-	$MD =  $Markdown->text($MD_file); 
-	echo nl2br($MD);
-	?>
-    </div>
     
+    </div>
+    <script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $('.contentpanel').load('https://test.loreji.com/apps/test/home_files/p_sn_li_nw.htm'); 
+    });
+    </script>
   </div><!-- mainpanel -->

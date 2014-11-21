@@ -6,7 +6,7 @@
 * The controller class handles the module controllers
 * @author Ramon J. A. Smit <ramon@daltcore.com>
 */
-class CLi 
+class CLI
 {	
 	/**
      * The input() function handles the user input
@@ -74,6 +74,12 @@ class CLi
 		system('stty echo');
 		echo "\n";
 		return $password;
+	}
+
+	public static function arguments($args = NULL)
+	{
+		$args = explode(' ', $args);
+		return $args;
 	}
 }
 ?>

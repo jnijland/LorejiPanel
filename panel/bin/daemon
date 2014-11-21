@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php
+
 $time_start = microtime(true);
 if (php_sapi_name() != 'cli') {
 	die('Must run from command line');

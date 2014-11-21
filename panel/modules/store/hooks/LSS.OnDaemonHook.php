@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access allowed.');
 
-class LSS extends controller
+class LSS extends Controller
 {	
 	/**
 	*
@@ -11,7 +11,13 @@ class LSS extends controller
 	* @package Core
 	*/
 	public static function _DoAutoLoad()
-	{
+	{	
+
+		if(strtolower(Module::getSetting('store', 'enable_lss')) === "false")
+		{
+			// Alrigth lets stop the autoload here.... 
+			return true;
+		}
 		printf("Connecting to LSS for service upgrade");
 		# Set post vars
 		$data = array(
@@ -19,23 +25,7 @@ class LSS extends controller
 		    'loreji_version' => Settings::get('loreji_version'),
 		    'store_id' => Settings::get('store_id')
 		);
-
-		# Create a connection
-		$url = 'http://loreji.com/php/lss.php';
-		$ch = curl_init($url);
-
-		# Form data string
-		$postString = http_build_query($data, '', '&');
-
-		# Setting our options
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $postString);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-		# Get the response
-		$response = curl_exec($ch);
-		//var_dump($response);
-		curl_close($ch);
+		Http::post_response('https://loreji.com/api/lss', $data);
 	}
 
 	public static function getLinuxDistro()

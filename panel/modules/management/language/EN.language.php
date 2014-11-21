@@ -8,6 +8,9 @@ $_LANG['store_id'] = 'Your Loreji LSS Key';
 $_LANG['use_panel_ssl'] = 'Enable SSL for the user panel.';
 $_LANG['global_suhosin'] = 'Suhosin PHP hardner';
 $_LANG['global_openbasedir'] = 'PHP Opendir';
+$_LANG['ssl.enforce.enabled'] = 'Force SSL';
+$_LANG['ccunit.key'] = 'Loreji CC-Unit key';
+$_LANG['ccunit.key.about'] = 'Loreji CC-Unit Key for adding this server as node to the raid <strong>KEEP THIS PRIVATE!</strong>';
 
 $_LANG['managment.alert.settingsaved'] = 'Settings are saved!';
 

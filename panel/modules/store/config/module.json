@@ -1,16 +1,21 @@
 {
-    "name": "store",
-    "author": {
-        "name": "Loreji Team",
-        "email": "team@loreji.com"
-    },
-    "type": "system",
-    "version": "1.0",
-    "update_url": "http://loreji.com/module/store/",
-    "permissions": {
-        "0": "PERM_RUN",
-        "1": "PERM_FILE",
-        "2": "PERM_INTERNET",
-        "3": "PERM_DAEMON"
-    }
+  "name":"store",
+  "author":{
+    "name":"Loreji Team",
+    "email":"team@loreji.com"
+  },
+  "type":"system",
+  "version":"1.0",
+  "permissions":{
+    "0":"PERM_RUN",
+    "1":"PERM_FILE",
+    "2":"PERM_INTERNET",
+    "3":"PERM_DAEMON",
+    "4":"PERM_READ_MODULE_SETTINGS",
+    "5":"PERM_WRITE_MODULE_SETTINGS",
+    "6":"PERM_APPEND_MAIN_MENU"
+  },
+  "settings":{
+    "enable_lss":"true"
+  }
 }

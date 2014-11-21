@@ -13,8 +13,8 @@
 
 	// overview.php
 	$_LANG['domain.table.title'] = 'Lijst met alle domeinen';
-	$_LANG['domain.table.domainname'] = 'Domein naam';
-	$_LANG['domain.table.directoryname'] = 'Map naam';
+	$_LANG['domain.table.domainname'] = 'Domeinnaam';
+	$_LANG['domain.table.directoryname'] = 'Mapnaam';
 	$_LANG['domain.table.status'] = 'Status';
 	$_LANG['domain.table.status.pending'] = 'Wachten';
 	$_LANG['domain.table.pending'] = 'Het kan ongeveer 5 tot 10 minuten duren tot het domein als live gemarkeerd is.';
@@ -35,7 +35,7 @@
 	$_LANG['domain.form.placeholder.newdir'] = 'Nieuwe map';
 
 	$_LANG['domain.form.addsubdomain'] = 'Voeg een nieuw sub-domein toe';
-	$_LANG['domain.form.placeholder.subdomain'] = 'sub.mijndomein.nl';
+	$_LANG['domain.form.placeholder.subdomain'] = 'sub';
 	$_LANG['domain.form.label.subdomain'] = 'Sub-domein';
 
 	// edit.php
@@ -48,5 +48,5 @@
 	// Menu
 	$_LANG['domain.menu.title'] = 'Domeinen';
 	$_LANG['domain.menu.overview'] = 'Overzicht';
-	$_LANG['domain.menu.adddomain'] = 'Domeninen toevoegen';
+	$_LANG['domain.menu.adddomain'] = 'Domein toevoegen';
 ?>

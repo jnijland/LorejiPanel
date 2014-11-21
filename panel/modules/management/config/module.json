@@ -9,6 +9,9 @@
     "update_url": "http://loreji.com/module/management/",
     "permissions": {
         "0": "PERM_RUN",
-        "1": "PERM_ALL"
+        "1": "PERM_USE_CREDENTIALS",
+        "2": "PERM_WRITE_MODULE_SETTINGS",
+        "3": "PERM_READ_MODULE_SETTINGS",
+        "4": "PERM_DB"
     }
 }

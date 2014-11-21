@@ -27,7 +27,7 @@
 
     <div class="col-sm-12 col-md-12">
     <?php 
-      Counter::init(Auth::check_login()['au_id_in']);
+      Counter::init(Auth::$instance->au_id_in);
     ?>
 
       <div class="panel panel-default">
@@ -98,7 +98,7 @@
               ?>
               <span class="sublabel"><?php echo Language::get('home.admin.diskusage'); ?> (<?php echo $system_hdd['percentage']; ?>%)</span>
               <div class="progress progress-sm">
-                <div style="width: <?php echo $system_hdd['percentage']; ?>%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="<?php echo $system_hdd['percentage']; ?>" role="progressbar" class="progress-bar <?php echo $statushdd; ?>"></div>
+                <div style="width: <?php echo $system_hdd['percentage']; ?>%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="<?php echo $system_hdd['percentage']; ?>" role="progressbar" class="progress-bar <?php echo $system_hdd['percentage']; ?>"></div>
               </div>
               <!-- progress -->
               <!-- col-sm-4 --> 
@@ -120,11 +120,11 @@
             <div class="col-sm-4" style>
               <h5 class="subtitle mb5"><?php echo Language::get('home.admin.serviceinfo'); ?></h5>
               <p class="mb15"><?php echo Language::get('home.admin.serviceinfo.desc'); ?></p>
-              <span class="sublabel"><span>Apache:</span>  <div style="float: right; position: relative; left: -164px;"><?php echo(System::Check_process('apache2') === TRUE)? '<font color="green">'.Language::get('home.admin.online').'</font>' : '<font color="red">'.Language::get('home.admin.offline').'</font>'; ?></div></span>
-              <span class="sublabel"><span>MySQL:</span>  <div style="float: right; position: relative; left: -164px;"><?php echo(System::Check_process('mysql') === TRUE)? '<font color="green">'.Language::get('home.admin.online').'</font>' : '<font color="red">'.Language::get('home.admin.offline').'</font>'; ?></div></span>
-              <span class="sublabel"><span>POP/IMAP:</span>  <div style="float: right; position: relative; left: -164px;"><?php echo(System::Check_process('dovecot') === TRUE)? '<font color="green">'.Language::get('home.admin.online').'</font>' : '<font color="red">'.Language::get('home.admin.offline').'</font>'; ?></div></span>
-              <span class="sublabel"><span>Postfix:</span>  <div style="float: right; position: relative; left: -164px;"><?php echo(System::Check_process('postfix') === TRUE)? '<font color="green">'.Language::get('home.admin.online').'</font>' : '<font color="red">'.Language::get('home.admin.offline').'</font>'; ?></div></span>
-              <span class="sublabel"><span>ProFTP:</span>  <div style="float: right; position: relative; left: -164px;"><?php echo(System::Check_process('proftpd') === TRUE)? '<font color="green">'.Language::get('home.admin.online').'</font>' : '<font color="red">'.Language::get('home.admin.offline').'</font>'; ?></div></span>
+              <span class="sublabel col-lg-4"><span>Apache:</span><br/>  <div class="col-lg-4"><?php echo(System::Check_process('apache2') === TRUE)? '<font color="green">'.Language::get('home.admin.online').'</font>' : '<font color="red">'.Language::get('home.admin.offline').'</font>'; ?></div></span>
+              <span class="sublabel col-lg-4"><span>MySQL:</span><br/>  <div class="col-lg-4"><?php echo(System::Check_process('mysql') === TRUE)? '<font color="green">'.Language::get('home.admin.online').'</font>' : '<font color="red">'.Language::get('home.admin.offline').'</font>'; ?></div></span>
+              <span class="sublabel col-lg-4"><span>POP/IMAP:</span><br/>  <div class="col-lg-4"><?php echo(System::Check_process('dovecot') === TRUE)? '<font color="green">'.Language::get('home.admin.online').'</font>' : '<font color="red">'.Language::get('home.admin.offline').'</font>'; ?></div></span>
+              <span class="sublabel col-lg-4"><span>Postfix:</span><br/>  <div class="col-lg-4"><?php echo(System::Check_process('postfix') === TRUE)? '<font color="green">'.Language::get('home.admin.online').'</font>' : '<font color="red">'.Language::get('home.admin.offline').'</font>'; ?></div></span>
+              <span class="sublabel col-lg-4"><span>ProFTP:</span><br/> <div class="col-lg-4"><?php echo(System::Check_process('proftpd') === TRUE)? '<font color="green">'.Language::get('home.admin.online').'</font>' : '<font color="red">'.Language::get('home.admin.offline').'</font>'; ?></div></span>
             </div>
 
           </div>
@@ -153,18 +153,17 @@
               <table class="table table-hover mb30">
                 <thead>
                   <tr>
-                    <th>Title</th>
-                    <th>Date</th>
+                    <th><?php echo Language::get('home.dashboard.newstitle'); ?></th>
+                    <th><?php echo Language::get('home.dashboard.newsdate'); ?></th>
                   </tr>
                 </thead>
                 <tbody>
                  <?php
-                 $feedUrl = 'http://loreji.com/forum/extern.php?action=feed&fid=1&type=xml&time='.time();
-                 $rawFeed = file_get_contents($feedUrl);
+                 $rawFeed = Http::get_response('http://loreji.com/forum/extern.php?action=feed&fid=1&type=xml&time='.time());
                  $xml = new SimpleXmlElement($rawFeed);
                  foreach ($xml->topic as $value) {
                   echo '<tr><td><a href="'.$value->link.'" target="_BLANK">'.$value->title.'</a></td><td>'.date('d-m-Y', strtotime($value->posted)).'</td></tr>';
-                }
+               }
                 ?>
               </tbody>
             </table>

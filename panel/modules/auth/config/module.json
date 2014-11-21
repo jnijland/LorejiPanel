@@ -9,6 +9,8 @@
     "update_url": "http://loreji.com/module/auth/",
     "permissions": {
         "0": "PERM_RUN",
-        "1": "PERM_DB"
+        "1": "PERM_DB",
+        "2": "PERM_USE_CREDENTIALS",
+        "3": "PERM_READ_SETTINGS"
     }
 }

@@ -20,14 +20,14 @@ class Language extends Controller
 	*/
 	public static function get($key, $find = array(), $replace = array())
 	{	
-		return Text::widont(str_replace($find, $replace, @self::$languages[$key]));
+		return str_replace($find, $replace, @self::$languages[$key]);
 	}
 
 	public static function Init_files(){
 
 		$use_cache = Settings::get('use_lang_cache');
 		
-		if(isset(Auth::check_login()['au_language_vc']))
+		if(isset(Auth::$instance['au_language_vc']))
 		{
 			$preffered_language = Auth::check_login()['au_language_vc'];
 		} 

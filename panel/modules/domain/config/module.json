@@ -11,6 +11,9 @@
         "0": "PERM_RUN",
         "1": "PERM_DB",
         "2": "PERM_FILE",
-        "3": "PERM_INTERNET"
+        "3": "PERM_INTERNET",
+        "4": "PERM_ACCESS_MYSQL_SSL",
+        "5": "PERM_READ_SETTINGS",
+        "6": "PERM_USE_CREDENTIALS"
     }
 }

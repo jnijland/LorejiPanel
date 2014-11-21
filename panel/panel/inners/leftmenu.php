@@ -60,41 +60,19 @@
 
           </ul>
         </li>
-
-        <!--Email Module -- 
-        <?php $controller = "mail"; ?>
-        <li class="nav-parent <?php echo (Route::$params->controller === $controller) ? 'active nav-active' : '' ;?>"><a href="#"><i class="fa fa-envelope-o"></i> <span>Email</span></a>
-          <ul class="children" style="<?php echo (Route::$params->controller === $controller && Cookie::get('nav_collapse') !== 'true') ? 'display:block;' : '' ;?>">
-
-            <?php $action = 'index'; ?>
-            <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>"><i class="fa fa-caret-right"></i> Mailboxes</a></li>
-
-            <?php $action = 'aliasses'; ?>
-            <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>"><i class="fa fa-caret-right"></i> Aliasses</a></li>
-
-            <?php $action = 'distlist'; ?>
-            <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller ) ? 'color:#1caf9a;' : '' ;?>"><i class="fa fa-caret-right"></i> Distribution Lists</a></li>
-
-          </ul>
-        </li>
-
-        <!--NodeJS Module -
-        <?php $controller = "nodejs"; ?>
-        <li class="nav-parent <?php echo (Route::$params->controller === $controller) ? 'active nav-active' : '' ;?>"><a href="#"><i class="fa icon-nodejs size-36"></i> <span>Node.JS</span></a>
-            <ul class="children" style="<?php echo (Route::$params->controller === $controller && Cookie::get('nav_collapse') !== 'true') ? 'display:block;' : '' ;?>">
-            <?php $action = 'index'; ?>
-            <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
-            <i class="fa fa-caret-right"></i> Overview</a>
-            </li>
-
-          </ul>
-        </li> -->
+-->
 
 
         <?php
-        foreach ($GLOBALS['modules'] as $value) {
-            foreach (glob(MODPATH."/".$value->name."/views/menu.view.php") as $filename) {
-              //  require_once($filename);
+        // Load the dynamic module entrys
+        /**
+         * 
+         */
+        foreach ($GLOBALS['modules_active'] as $module) {
+            if(isset($module->permcheck) && $module->permcheck === true){
+                foreach (glob(MODPATH."/".strtolower($module->name)."/views/menu.view.php") as $filename) {
+                    require_once($filename);
+                }
             }
         }
         ?>
@@ -103,37 +81,34 @@
             // All admin thingys
             if(Auth::has_role('admin') === TRUE){
         ?>  
+    
+        <!--Store Module -->
+        <?php $controller = "store"; ?>
+        <li class="nav-parent <?php echo (Route::$params->controller === $controller) ? 'active nav-active' : '' ;?>"><a href="#"><i class="fa fa-shopping-cart"></i> <span>Store</span></a>
+            <ul class="children" style="<?php echo (Route::$params->controller === $controller && Cookie::get('nav_collapse') !== 'true') ? 'display:block;' : '' ;?>">
+            
+            <?php $action = 'index'; ?>
+            <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
+            <i class="fa fa-caret-right"></i> <?php echo Language::get('domain.menu.overview'); ?></a>
+            </li>
 
-        <!-- Dashboard Module -->
-        <li class="<?php echo (Route::$params->controller === 'store') ? 'active' : '' ;?>"><a href="<?php echo Url::site('/store/index'); ?>"><i class="fa fa-shopping-cart"></i> <span>Store</span></a></li>
-        
+            <?php $action = 'developer'; ?>
+            <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
+            <i class="fa fa-caret-right"></i> Developer</a>
+            </li>
+
+          </ul>
+        </li> 
+
         <!--Apache_Management Module -->
         <?php $controller = "management" ?>
         <li class="nav-parent <?php echo (Route::$params->controller === $controller) ? 'active nav-active' : '' ;?>"><a href="#">
         <i class="fa fa-sitemap"></i> <span>Management</span></a>
           <ul class="children" style="<?php echo (Route::$params->controller === $controller && Cookie::get('nav_collapse') !== 'true') ? 'display:block;' : '' ;?>">
 
-            <?php $action = 'users'; ?>
+            <?php $action = 'modulesettings'; ?>
             <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
-            <i class="fa fa-caret-right"></i> User Management</a></li>
-
-           <!-- <?php $action = 'packages'; ?>
-            <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
-            <i class="fa fa-caret-right"></i> Package Management</a></li>
-
-            <?php $action = 'services'; ?>
-            <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
-            <i class="fa fa-caret-right"></i> Service Management</a></li>
-
-            <?php $action = 'apache'; ?>
-            <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
-            <i class="fa fa-caret-right"></i> Apache Management</a></li>
-
-            <?php $action = 'php'; ?>
-            <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
-            <i class="fa fa-caret-right"></i> PHP Management</a></li>
-            -->
-
+            <i class="fa fa-caret-right"></i> Module Settings</a></li>
             <!-- as last -->
             <?php $action = 'loreji'; ?>
             <li><a href="<?php echo Url::site('/'.$controller.'/'.$action); ?>" style="<?php echo (Route::$params->action === $action && $controller === Route::$params->controller) ? 'color:#1caf9a;' : '' ;?>">
@@ -146,83 +121,13 @@
         <?php 
             }
         ?> 
-        <!--
-        <li class="nav-parent"><a href="#"><i class="fa fa-suitcase"></i> <span>UI Elements</span></a>
-          <ul class="children">
-            <li><a href="buttons.html"><i class="fa fa-caret-right"></i> Buttons</a></li>
-            <li><a href="icons.html"><i class="fa fa-caret-right"></i> Icons</a></li>
-            <li><a href="typography.html"><i class="fa fa-caret-right"></i> Typography</a></li>
-            <li><a href="alerts.html"><i class="fa fa-caret-right"></i> Alerts &amp; Notifications</a></li>
-            <li><a href="tabs-accordions.html"><i class="fa fa-caret-right"></i> Tabs &amp; Accordions</a></li>
-            <li><a href="sliders.html"><i class="fa fa-caret-right"></i> Sliders</a></li>
-            <li><a href="graphs.html"><i class="fa fa-caret-right"></i> Graphs &amp; Charts</a></li>
-            <li><a href="widgets.html"><i class="fa fa-caret-right"></i> Panels &amp; Widgets</a></li>
-            <li><a href="extras.html"><i class="fa fa-caret-right"></i> Extras</a></li>
-          </ul>
-        </li>
-        <li><a href="tables.html"><i class="fa fa-th-list"></i> <span>Tables</span></a></li>
-        <li><a href="maps.html"><i class="fa fa-map-marker"></i> <span>Maps</span></a></li>
-        <li class="nav-parent"><a href="#"><i class="fa fa-file-text"></i> <span>Pages</span></a>
-          <ul class="children">
-            <li><a href="calendar.html"><i class="fa fa-caret-right"></i> Calendar</a></li>
-            <li><a href="media-manager.html"><i class="fa fa-caret-right"></i> Media Manager</a></li>
-            <li><a href="timeline.html"><i class="fa fa-caret-right"></i> Timeline</a></li>
-            <li><a href="blog-list.html"><i class="fa fa-caret-right"></i> Blog List</a></li>
-            <li><a href="blog-single.html"><i class="fa fa-caret-right"></i> Blog Single</a></li>
-            <li><a href="people-directory.html"><i class="fa fa-caret-right"></i> People Directory</a></li>
-            <li><a href="profile.html"><i class="fa fa-caret-right"></i> Profile</a></li>
-            <li><a href="invoice.html"><i class="fa fa-caret-right"></i> Invoice</a></li>
-            <li><a href="search-results.html"><i class="fa fa-caret-right"></i> Search Results</a></li>
-            <li><a href="blank.html"><i class="fa fa-caret-right"></i> Blank Page</a></li>
-            <li><a href="notfound.html"><i class="fa fa-caret-right"></i> 404 Page</a></li>
-            <li><a href="locked.html"><i class="fa fa-caret-right"></i> Locked Screen</a></li>
-            <li><a href="signin.html"><i class="fa fa-caret-right"></i> Sign In</a></li>
-            <li><a href="signup.html"><i class="fa fa-caret-right"></i> Sign Up</a></li>
-          </ul>
-        </li>
-        <li><a href="layouts.html"><i class="fa fa-laptop"></i> <span>Skins &amp; Layouts</span></a></li> -->
+        <?php if(Auth::has_role('ccunit')) { ?>
+
+            <li><a href="<?php echo Url::site('/apps/ccunit/index.php?page=dashboard'); ?>">
+            <i class="fa fa-life-ring"></i> <span>CC-Unit</span></a></li>
+        <?php  } ?>
+
       </ul>
-      
-     <!-- <div class="infosummary">
-        <h5 class="sidebartitle">Information Summary</h5>    
-        <ul>
-            <li>
-                <div class="datainfo">
-                    <span class="text-muted">Daily Traffic</span>
-                    <h4>630, 201</h4>
-                </div>
-                <div id="sidebar-chart" class="chart"></div>   
-            </li>
-            <li>
-                <div class="datainfo">
-                    <span class="text-muted">Average Users</span>
-                    <h4>1, 332, 801</h4>
-                </div>
-                <div id="sidebar-chart2" class="chart"></div>   
-            </li>
-            <li>
-                <div class="datainfo">
-                    <span class="text-muted">Disk Usage</span>
-                    <h4>82.2%</h4>
-                </div>
-                <div id="sidebar-chart3" class="chart"></div>   
-            </li>
-            <li>
-                <div class="datainfo">
-                    <span class="text-muted">CPU Usage</span>
-                    <h4>140.05 - 32</h4>
-                </div>
-                <div id="sidebar-chart4" class="chart"></div>   
-            </li>
-            <li>
-                <div class="datainfo">
-                    <span class="text-muted">Memory Usage</span>
-                    <h4>32.2%</h4>
-                </div>
-                <div id="sidebar-chart5" class="chart"></div>   
-            </li>
-        </ul>
-      </div> infosummary -->
 
     </div><!-- leftpanelinner -->
   </div><!-- leftpanel -->

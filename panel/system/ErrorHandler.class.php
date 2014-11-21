@@ -20,7 +20,6 @@
     <body>
         <h1>Oops! An Exception Has Been Thrown</h1>
         <h4>Loreji: "<em>'.$exception->getMessage().'</em>"</h4>
-        <p><pre>'.print_r($exception,TRUE).'</pre></p>
     </body>
     </html>';
     }
@@ -35,4 +34,31 @@
      * @package Core
      */
     set_exception_handler('exception_handler');
+
+    /**
+    * The ErrorHandler class
+    *
+    * The ErrorHandler class handles all errors
+    *
+    * @author Ramon J. A. Smit <ramon@daltcore.com>
+     */
+    class ErrorHandler {
+
+        /**
+         * The class name wehere this exception is called
+         * @var String $class Current class name
+         */
+        public static $class = NULL;
+
+        /**
+         * Method set_error handles the general errors called from Loreji
+         * @param String $errormessage A text description of error message
+         */
+        public static function set_error($errormessage)
+        {
+            throw new Exception($errormessage, time());
+            exit(0);
+        }
+
+    }
 ?>

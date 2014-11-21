@@ -68,8 +68,9 @@ strong {
 /************************/
 
 .headerbar {
-   border-left: 1px solid #eee;
-   background: #fff;
+border-left: 1px solid #eee;
+background: #fff;
+height: 49px;
 }
 
 .headerbar::after {
@@ -138,7 +139,7 @@ strong {
 }
 
 .headermenu .dropdown-toggle {
-   padding: 12px 10px;
+   padding: 15px 10px;
    border-color: #fff;
 	background: #fff;
 	-moz-border-radius: 0;
@@ -627,7 +628,7 @@ strong {
 
 .pageheader {
    padding: 15px;
-   border-bottom: 1px solid #d3d7db;
+  /*  border-bottom: 1px solid #d3d7db; */
    border-top: 1px solid #eee;
    background: #f7f7f7;
    position: relative;
@@ -3872,10 +3873,11 @@ div.error label.error:before {
 
 .permissionwrap .permissionheader {
    font-weight: bold;
+   cursor: pointer;
 }
 
 .permissionwrap .permissionlist {
-   display: block;
+   display: none;
 }
 
 .permissionwrap .permissionlist ul {
@@ -3895,4 +3897,8 @@ margin-top: -14px;
 .permission-warning {
    width: 822px;
    left: 455px;
+}
+
+.debugWarning {
+   display: none;
 }
